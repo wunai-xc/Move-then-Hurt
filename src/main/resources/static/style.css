@@ -48,7 +48,7 @@ body {
     margin-bottom: 24px;
 }
 
-/* 卡片单元格 - 保持原来的牛皮纸色，无圆角 */
+/* 卡片单元格 - 牛皮纸色，无圆角 */
 .cell {
     background: #d4b48c;
     background-image: radial-gradient(circle at 25% 40%, rgba(255,245,215,0.3) 2%, transparent 2.5%),
@@ -63,8 +63,6 @@ body {
     position: relative;
 }
 
-/* 注意：其他样式如 .cell.player_a, .cell.player_b, .cell.king, .card-header 等保留不变，这里省略重复 */
-
 /* 玩家 A 阵营：左侧深红色竖条 */
 .cell.player_a {
     box-shadow: inset 3px 0 0 0 #b85c1a;
@@ -75,14 +73,39 @@ body {
     box-shadow: inset 3px 0 0 0 #2e6ac9;
 }
 
-/* 国王卡牌：金色纹理，不加金色边框 */
+/* 国王卡牌：金色对角镶边（直角三角形） */
 .cell.king {
     background: #cd9e6b;
     background-image: repeating-linear-gradient(45deg, rgba(255,215,0,0.2) 0px, rgba(255,215,0,0.2) 2px, transparent 2px, transparent 8px);
     box-shadow: inset 0 0 0 2px gold;
 }
 
-/* 卡片顶部栏 - 适应竖长卡片，信息紧凑但可读 */
+/* 国王金色直角三角形装饰（左上角和右下角） */
+.cell.king::before,
+.cell.king::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    pointer-events: none;
+}
+/* 左上角金色直角三角形 */
+.cell.king::before {
+    top: 0;
+    left: 0;
+    border-width: 20px 20px 0 0;
+    border-color: #ffd700 transparent transparent transparent;
+}
+/* 右下角金色直角三角形 */
+.cell.king::after {
+    bottom: 0;
+    right: 0;
+    border-width: 0 0 20px 20px;
+    border-color: transparent transparent #ffd700 transparent;
+}
+
+/* 卡片顶部栏 */
 .card-header {
     display: flex;
     justify-content: space-between;
@@ -91,6 +114,8 @@ body {
     font-size: 0.75rem;
     font-weight: bold;
     padding: 0 4px;
+    z-index: 2;
+    position: relative;
 }
 
 .card-name {
@@ -123,6 +148,7 @@ body {
     right: 0;
     bottom: 0;
     pointer-events: none;
+    z-index: 1;
 }
 
 /* 单个方向标记 - 位置自适应百分比 */
@@ -223,11 +249,63 @@ button#resetBtn {
     font-weight: bold;
 }
 
-/* 移动端响应式 - 竖长卡片自动适配屏幕宽度 */
+/* 手牌区样式 */
+.hand-area {
+    margin-top: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 12px;
+    padding: 10px;
+    color: white;
+}
+.hand-title {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    text-align: center;
+}
+.hand-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    min-height: 100px;
+}
+.hand-card {
+    background: #d4b48c;
+    width: 70px;
+    height: 100px;
+    border-radius: 8px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    box-shadow: 0 2px 5px black;
+    transition: transform 0.1s;
+    color: black;
+}
+.hand-card:hover {
+    transform: scale(1.05);
+    background: #e0c090;
+}
+.hand-card-name {
+    font-weight: bold;
+    font-size: 0.8rem;
+    text-align: center;
+}
+.hand-card-stats {
+    display: flex;
+    gap: 8px;
+    font-size: 0.7rem;
+}
+.hand-card-hp { color: #8bc34a; }
+.hand-card-dmg { color: #ff8a5c; }
+
+/* 移动端响应式 */
 @media (max-width: 700px) {
     .board {
         grid-template-columns: repeat(5, 13vw);
-        grid-template-rows: repeat(5, 26vw);  /* 保持1:2比例 */
+        grid-template-rows: repeat(5, 26vw);
         gap: 1px;
     }
     .card-header {
@@ -237,6 +315,7 @@ button#resetBtn {
     .card-name {
         font-size: 2.5vw;
         padding: 1px 2px;
+        max-width: 10vw;
     }
     .direction-marker {
         font-size: 3vw;
@@ -252,5 +331,15 @@ button#resetBtn {
     }
     .turn-indicator {
         font-size: 1.2rem;
+    }
+    .hand-card {
+        width: 12vw;
+        height: 18vw;
+    }
+    .hand-card-name {
+        font-size: 2.5vw;
+    }
+    .hand-card-stats {
+        font-size: 2vw;
     }
 }
