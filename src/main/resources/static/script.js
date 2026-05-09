@@ -59,6 +59,8 @@ function renderBoard() {
             cell.className = "cell";
             const unit = boardState.board[i][j];
             if (unit) {
+                // 标记有单位（用于 CSS 显示卡牌背景）
+                cell.classList.add("has-unit");
                 const moveSet = new Set(unit.card.moveDirections);
                 const attackSet = new Set(unit.card.attackDirections);
                 const markersHtml = getDirectionMarkers(moveSet, attackSet);
@@ -157,8 +159,7 @@ function handleCellClick(x, y) {
 
     // 移动模式
     if (!moveMode) {
-        // 未在移动模式（理论上每回合会自动激活，但以防万一）
-        document.getElementById("message").innerText = "当前不是移动模式，请等待回合开始或点击移动模式按钮激活";
+        document.getElementById("message").innerText = "当前不是移动模式，请等待回合开始。";
         return;
     }
     const unit = boardState.board[x][y];
@@ -203,7 +204,6 @@ function connect() {
         selectedFrom = null;
         deployMode = false;
         selectedCardIndex = null;
-        // 移动模式按钮高亮（仅作视觉反馈）
         const moveBtn = document.getElementById("moveModeBtn");
         if (moveBtn) moveBtn.classList.add("move-mode-active");
 
@@ -213,7 +213,7 @@ function connect() {
             if (moveBtn) moveBtn.classList.remove("move-mode-active");
         } else {
             document.getElementById("turnIndicator").innerText = `当前回合: ${currentPlayer}`;
-            document.getElementById("message").innerText = ""; // 清除提示
+            document.getElementById("message").innerText = "";
         }
     };
 }
@@ -231,7 +231,7 @@ function bindEvents() {
                 document.getElementById("message").innerText = "不是你的回合";
                 return;
             }
-            // 手动激活移动模式（当某些原因下 moveMode 为 false 时可用来恢复）
+            // 手动激活移动模式（在误关闭时可用）
             moveMode = true;
             deployMode = false;
             selectedCardIndex = null;
@@ -248,9 +248,7 @@ function bindEvents() {
                 document.getElementById("message").innerText = "不是你的回合";
                 return;
             }
-            // 发送抽卡请求
             socket.send(JSON.stringify({ action: "draw", player: currentPlayer }));
-            // 本回合结束，关闭移动模式
             moveMode = false;
             if (moveBtn) moveBtn.classList.remove("move-mode-active");
             document.getElementById("message").innerText = "抽卡中...";
