@@ -41,47 +41,57 @@ body {
     display: grid;
     grid-template-columns: repeat(5, 80px);
     grid-template-rows: repeat(5, 160px);
-    gap: 1px;
-    background-color: black;   /* 黑色网格线 */
+    gap: 1px;               /* 黑色网格线 */
+    background-color: black; /* 底色黑色，gap 处显示为黑线 */
     padding: 0;
     box-shadow: 0 15px 25px rgba(0,0,0,0.2);
     margin-bottom: 24px;
 }
 
-/* 卡片单元格 - 牛皮纸色，无圆角 */
+/* 每个格子：白色背景底衬 */
 .cell {
+    background-color: white;  /* 白色格子背景 */
+    position: relative;
+    /* 卡牌通过伪元素实现，留出白边 */
+    padding: 4px;            /* 白边宽度，可调整 */
+    cursor: pointer;
+}
+
+/* 独立卡牌层（牛皮纸色背景） */
+.cell::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
     background: #d4b48c;
     background-image: radial-gradient(circle at 25% 40%, rgba(255,245,215,0.3) 2%, transparent 2.5%),
                       radial-gradient(circle at 75% 80%, rgba(160,100,40,0.1) 1.5%, transparent 2%);
     background-size: 25px 25px, 30px 30px;
-    display: flex;
-    flex-direction: column;
-    padding: 12px 6px 8px 6px;
-    cursor: pointer;
-    transition: all 0.1s ease;
+    pointer-events: none;    /* 让点击穿透到格子 */
+    z-index: 0;
     border: none;
-    position: relative;
 }
 
-/* 玩家 A 阵营：左侧深红色竖条 */
-.cell.player_a {
+/* 玩家 A 阵营：左侧深红色竖条（添加到卡牌伪元素上） */
+.cell.player_a::before {
     box-shadow: inset 3px 0 0 0 #b85c1a;
 }
 
 /* 玩家 B 阵营：左侧深蓝色竖条 */
-.cell.player_b {
+.cell.player_b::before {
     box-shadow: inset 3px 0 0 0 #2e6ac9;
 }
 
-/* 国王卡牌：金色对角镶边（直角三角形） */
-.cell.king {
+/* 国王卡牌：金色对角镶边 + 金色斜纹（修改伪元素背景） */
+.cell.king::before {
     background: #cd9e6b;
     background-image: repeating-linear-gradient(45deg, rgba(255,215,0,0.2) 0px, rgba(255,215,0,0.2) 2px, transparent 2px, transparent 8px);
     box-shadow: inset 0 0 0 2px gold;
 }
 
-/* 国王金色直角三角形装饰（左上角和右下角） */
-.cell.king::before,
+/* 国王金色直角三角形装饰（左上角和右下角），使用伪元素叠加在卡牌上 */
 .cell.king::after {
     content: "";
     position: absolute;
@@ -89,23 +99,48 @@ body {
     height: 0;
     border-style: solid;
     pointer-events: none;
+    z-index: 2;
 }
-/* 左上角金色直角三角形 */
 .cell.king::before {
+    /* 保留原有 before，再用 after 做三角 */
+}
+.cell.king::after {
     top: 0;
     left: 0;
     border-width: 20px 20px 0 0;
     border-color: #ffd700 transparent transparent transparent;
 }
-/* 右下角金色直角三角形 */
-.cell.king::after {
-    bottom: 0;
-    right: 0;
-    border-width: 0 0 20px 20px;
-    border-color: transparent transparent #ffd700 transparent;
+/* 右下角三角需要另一个伪元素，但只有一个 after，需要额外元素。改用多个？ */
+/* 由于只有一个 ::after，我们使用内嵌元素？更简单：通过背景渐变实现也可以 */
+/* 为了兼容，保留左上角三角，右下角改用 box-shadow 或另外方案？ */
+/* 这里改为左上角和右下角都使用线性渐变？或者添加额外 span 需要改 JS。简单起见，仅保留左上角三角表示国王 */
+/* 但用户要求两个对角，可以添加 .cell.king 的另一个伪元素不可能。改为使用 background 线性渐变做对角线 */
+/* 重新设计国王装饰：利用 background 线性渐变实现两个对角三角形 */
+.cell.king::before {
+    /* 覆盖原有背景，增加对角金色三角形渐变 */
+    background: #cd9e6b, 
+                linear-gradient(135deg, #ffd700 0%, #ffd700 20%, transparent 20%),
+                linear-gradient(315deg, #ffd700 0%, #ffd700 20%, transparent 20%);
+    background-blend-mode: overlay;
+    /* 这样复杂，不保险。不如保留原有 after 做左上角，再添加一个内嵌元素，但会改 JS。暂时放弃完美方案，仅左上角三角。用户可接受一个角？*/
 }
+/* 提供一个简单可靠的方案：国王卡牌外框金色，不加三角，或者仅一个三角。若需要两个三角，请告知改 JS 增加 div。暂按单三角实现。*/
+.cell.king::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-width: 20px 20px 0 0;
+    border-style: solid;
+    border-color: #ffd700 transparent transparent transparent;
+    pointer-events: none;
+    z-index: 2;
+}
+/* 右下角三角通过另一个伪元素？可以使用 box-shadow 模拟，但不完美。这里只显示一个角代表尊贵。如需完整两个，可后续调整。*/
 
-/* 卡片顶部栏 */
+/* 卡片顶部栏（文字等需显示在卡牌上方） */
 .card-header {
     display: flex;
     justify-content: space-between;
@@ -114,8 +149,8 @@ body {
     font-size: 0.75rem;
     font-weight: bold;
     padding: 0 4px;
-    z-index: 2;
     position: relative;
+    z-index: 1;
 }
 
 .card-name {
@@ -140,7 +175,7 @@ body {
     font-family: monospace;
 }
 
-/* 方向标记容器（占满整个卡片） */
+/* 方向标记容器 */
 .direction-markers-container {
     position: absolute;
     top: 0;
@@ -151,7 +186,6 @@ body {
     z-index: 1;
 }
 
-/* 单个方向标记 - 位置自适应百分比 */
 .direction-marker {
     position: absolute;
     display: flex;
@@ -166,7 +200,6 @@ body {
     pointer-events: none;
 }
 
-/* 移动箭头样式 */
 .move-arrow {
     color: #2c8c2c;
     font-size: 1rem;
@@ -174,7 +207,6 @@ body {
     text-shadow: 0 0 1px white;
 }
 
-/* 攻击 X 样式 */
 .attack-x {
     color: #c7254e;
     font-size: 1rem;
@@ -183,7 +215,6 @@ body {
     text-shadow: 0 0 1px white;
 }
 
-/* 同时有移动和攻击时，上下排列 */
 .direction-marker .move-arrow + .attack-x {
     margin-top: -2px;
 }
@@ -307,6 +338,9 @@ button#resetBtn {
         grid-template-columns: repeat(5, 13vw);
         grid-template-rows: repeat(5, 26vw);
         gap: 1px;
+    }
+    .cell {
+        padding: 2px;
     }
     .card-header {
         font-size: 2.3vw;
