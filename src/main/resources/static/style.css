@@ -128,7 +128,7 @@ body {
     max-width: 70px;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-top: 4px;         /* 减小下移距离 */
+    margin-top: 10px;         /* 减小下移距离 */
 }
 
 /* 血量/伤害颜色加深 */
