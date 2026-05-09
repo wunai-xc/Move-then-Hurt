@@ -4,6 +4,33 @@ let boardState;
 let moveMode = false;
 let selectedFrom = null;
 
+// 方向映射：文字 → 箭头符号
+const arrowIcon = {
+    'N': '↑', 'NE': '↗', 'E': '→', 'SE': '↘',
+    'S': '↓', 'SW': '↙', 'W': '←', 'NW': '↖'
+};
+
+// 3x3 网格中的方向顺序（索引0~8，中心为 null）
+const dirGrid = [
+    'N', 'NE', 'E',
+    'NW', null, 'SE',
+    'W', 'SW', 'S'
+];
+
+// 生成方向格子的 HTML
+function getDirectionsHtml(moveSet, attackSet) {
+    return dirGrid.map(dir => {
+        if (dir === null) {
+            return `<div class="dir-cell center"></div>`;
+        }
+        const hasMove = moveSet.has(dir);
+        const hasAttack = attackSet.has(dir);
+        const inner = hasMove ? `<span class="dir-arrow">${arrowIcon[dir]}</span>` : '';
+        const outer = hasAttack ? `<span class="dir-attack">X</span>` : '';
+        return `<div class="dir-cell" data-dir="${dir}">${outer}${inner}</div>`;
+    }).join('');
+}
+
 function connect() {
     const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//${location.host}/game`;
@@ -12,7 +39,6 @@ function connect() {
     socket.onopen = () => console.log("WebSocket connected");
     socket.onerror = (err) => console.error("WebSocket error", err);
     socket.onmessage = (event) => {
-        console.log("Received:", event.data);
         boardState = JSON.parse(event.data);
         currentPlayer = boardState.currentTurn;
         renderBoard();
@@ -37,7 +63,19 @@ function renderBoard() {
             cell.className = "cell";
             const unit = boardState.board[i][j];
             if (unit) {
-                cell.innerText = `${unit.card.name}\n❤️${unit.currentHp}\n⚔️${unit.card.damage}`;
+                const moveSet = new Set(unit.card.moveDirections);
+                const attackSet = new Set(unit.card.attackDirections);
+                const directionsHtml = getDirectionsHtml(moveSet, attackSet);
+                cell.innerHTML = `
+                    <div class="card-header">
+                        <div class="card-hp">血:${unit.currentHp}</div>
+                        <div class="card-name">${unit.card.name}</div>
+                        <div class="card-dmg">攻:${unit.card.damage}</div>
+                    </div>
+                    <div class="card-directions">
+                        ${directionsHtml}
+                    </div>
+                `;
                 cell.classList.add(unit.owner.toLowerCase());
                 if (unit.king) cell.classList.add("king");
             } else {
