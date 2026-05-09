@@ -5,26 +5,34 @@ import com.example.cardgame.model.Direction;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
+import javax.annotation.PostConstruct;
 import java.io.InputStream;
 import java.util.*;
 
+@Component
 public class CardLoader {
     private List<Card> allCards = new ArrayList<>();
     private Card kingCard;
 
-    public CardLoader() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        InputStream is = new ClassPathResource("cards.json").getInputStream();
-        List<Map<String, Object>> rawCards = mapper.readValue(is, new TypeReference<>() {});
-        for (Map<String, Object> raw : rawCards) {
-            String name = (String) raw.get("name");
-            int hp = (int) raw.get("hp");
-            int dmg = (int) raw.get("damage");
-            Set<Direction> move = parseDirections((List<String>) raw.get("move"));
-            Set<Direction> attack = parseDirections((List<String>) raw.get("attack"));
-            Card card = new Card(name, hp, dmg, move, attack);
-            allCards.add(card);
-            if (name.equals("King")) kingCard = card;
+    @PostConstruct
+    public void init() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            InputStream is = new ClassPathResource("cards.json").getInputStream();
+            List<Map<String, Object>> rawCards = mapper.readValue(is, new TypeReference<>() {});
+            for (Map<String, Object> raw : rawCards) {
+                String name = (String) raw.get("name");
+                int hp = (int) raw.get("hp");
+                int dmg = (int) raw.get("damage");
+                Set<Direction> move = parseDirections((List<String>) raw.get("move"));
+                Set<Direction> attack = parseDirections((List<String>) raw.get("attack"));
+                Card card = new Card(name, hp, dmg, move, attack);
+                allCards.add(card);
+                if (name.equals("King")) kingCard = card;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load cards.json", e);
         }
     }
 
@@ -33,6 +41,7 @@ public class CardLoader {
         for (String d : dirs) set.add(Direction.valueOf(d));
         return set;
     }
+
     public List<Card> getAllCards() { return allCards; }
     public Card getKingCard() { return kingCard; }
 }
