@@ -9,10 +9,53 @@ public class Card {
     private Set<Direction> moveDirections;
     private Set<Direction> attackDirections;
 
-    // 构造器、getter/setter
+    // 构造器
     public Card(String name, int hp, int damage, Set<Direction> move, Set<Direction> attack) {
-        this.name = name; this.hp = hp; this.damage = damage;
-        this.moveDirections = move; this.attackDirections = attack;
+        this.name = name;
+        this.hp = hp;
+        this.damage = damage;
+        this.moveDirections = move;
+        this.attackDirections = attack;
     }
-    // 省略getter/setter (需自行补充)
+
+    // Getter 和 Setter
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
+    public Set<Direction> getMoveDirections() {
+        return moveDirections;
+    }
+
+    public void setMoveDirections(Set<Direction> moveDirections) {
+        this.moveDirections = moveDirections;
+    }
+
+    public Set<Direction> getAttackDirections() {
+        return attackDirections;
+    }
+
+    public void setAttackDirections(Set<Direction> attackDirections) {
+        this.attackDirections = attackDirections;
+    }
 }
