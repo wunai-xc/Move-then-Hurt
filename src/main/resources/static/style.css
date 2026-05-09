@@ -36,13 +36,13 @@ body {
     letter-spacing: 2px;
 }
 
-/* 棋盘网格 - 白色细线网格 */
+/* 棋盘网格 - 黑色细线网格 */
 .board {
     display: grid;
     grid-template-columns: repeat(5, 80px);
     grid-template-rows: repeat(5, 160px);
     gap: 1px;
-    background-color: white;   /* 白色网格线 */
+    background-color: black;   /* 黑色网格线 */
     padding: 0;
     box-shadow: 0 15px 25px rgba(0,0,0,0.2);
     margin-bottom: 24px;
