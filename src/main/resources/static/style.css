@@ -15,7 +15,6 @@ body {
     padding: 20px;
 }
 
-/* 游戏主容器 */
 .game-container {
     background: rgba(0, 0, 0, 0.4);
     border-radius: 48px;
@@ -24,7 +23,6 @@ body {
     backdrop-filter: blur(2px);
 }
 
-/* 回合指示器 */
 .turn-indicator {
     text-align: center;
     font-size: 1.8rem;
@@ -40,11 +38,11 @@ body {
     letter-spacing: 2px;
 }
 
-/* 棋盘网格 */
+/* 棋盘网格 - 长方形卡片 */
 .board {
     display: grid;
-    grid-template-columns: repeat(5, 96px);
-    grid-template-rows: repeat(5, 96px);
+    grid-template-columns: repeat(5, 110px);
+    grid-template-rows: repeat(5, 90px);
     gap: 10px;
     background: #6b4c3b;
     background: radial-gradient(circle at 30% 20%, #8b5e3c, #4a2e1e);
@@ -54,23 +52,17 @@ body {
     margin-bottom: 24px;
 }
 
-/* 网格单元格（棋盘格） */
+/* 卡片单元格 */
 .cell {
     background: #eed9bb;
     background: radial-gradient(ellipse at 30% 30%, #fdf0df, #dbbd92);
-    border-radius: 20px;
+    border-radius: 16px;
     box-shadow: inset 0 1px 4px rgba(0,0,0,0.2), 0 2px 5px rgba(0,0,0,0.2);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    font-weight: bold;
-    text-align: center;
-    padding: 8px 4px;
-    transition: all 0.1s ease;
+    padding: 6px 8px;
     cursor: pointer;
-    color: #2c1a0c;
+    transition: all 0.1s ease;
     border: 1px solid #f3e5c0;
 }
 
@@ -91,23 +83,99 @@ body {
     box-shadow: inset 0 0 0 3px gold, 0 0 0 2px #b8860b;
 }
 
-.cell.king::before {
-    content: "👑";
-    font-size: 1.4rem;
-    display: block;
-    line-height: 1;
-    margin-bottom: 4px;
+/* 卡片顶部栏 */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 0 2px;
 }
 
-/* 卡牌文字布局 */
-.cell span {
+.card-name {
+    font-weight: bold;
+    text-align: center;
+    font-size: 0.85rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    padding: 2px 8px;
+    white-space: nowrap;
+}
+
+.card-hp {
+    color: #8bc34a;
+    /* 绿色 */
+    font-family: monospace;
+}
+
+.card-dmg {
+    color: #ff8a5c;
+    /* 橙色 */
+    font-family: monospace;
+}
+
+/* 方向网格 3x3 */
+.card-directions {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 2px;
+    aspect-ratio: 1 / 1;
+    background: #c9a87b;
+    border-radius: 10px;
+    padding: 3px;
+    margin-top: 4px;
+}
+
+/* 每个方向格子 */
+.dir-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fcf3e0;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* 中心格留空 */
+.dir-cell.center {
+    background: transparent;
+    box-shadow: none;
+}
+
+/* 内圈箭头（移动） */
+.dir-arrow {
+    font-size: 1rem;
+    color: #2c6e2c;
+    z-index: 2;
+}
+
+/* 外圈X（攻击） */
+.dir-attack {
+    position: absolute;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #c7254e;
+    opacity: 0.9;
+    text-shadow: 0 0 2px white;
+    z-index: 1;
+}
+
+/* 只有攻击，没有移动时，X 居中显示且不绝对定位 */
+.dir-cell:not(:has(.dir-arrow)) .dir-attack {
+    position: static;
     display: block;
-    font-size: 0.7rem;
-    background: rgba(0,0,0,0.5);
-    color: white;
-    padding: 1px 4px;
-    border-radius: 12px;
-    margin-top: 2px;
+    font-size: 1.2rem;
+}
+
+/* 同时有移动和攻击：X 覆盖在背景上，箭头叠加在上方（视觉上层） */
+.dir-cell:has(.dir-arrow) .dir-attack {
+    opacity: 0.7;
+    font-size: 1.3rem;
 }
 
 /* 按钮区域 */
@@ -154,13 +222,11 @@ button#resetBtn {
     box-shadow: 0 4px 0 #4d2e16;
 }
 
-/* 移动模式开启时的指示 */
 .move-mode-active {
     background: #a7772e !important;
     box-shadow: 0 0 0 3px #ffd966, 0 4px 0 #5e3a15 !important;
 }
 
-/* 游戏结束信息 */
 .message {
     text-align: center;
     margin-top: 20px;
@@ -175,17 +241,23 @@ button#resetBtn {
     font-weight: bold;
 }
 
-/* 响应式：手机屏幕缩小格子 */
+/* 移动端响应式 */
 @media (max-width: 700px) {
     .board {
         grid-template-columns: repeat(5, 15vw);
-        grid-template-rows: repeat(5, 15vw);
+        grid-template-rows: repeat(5, 13vw);
         gap: 8px;
         padding: 12px;
     }
-    .cell {
-        font-size: 0.6rem;
-        padding: 3px;
+    .card-header {
+        font-size: 2.5vw;
+    }
+    .card-name {
+        font-size: 2.8vw;
+        padding: 1px 4px;
+    }
+    .dir-arrow, .dir-attack {
+        font-size: 3vw;
     }
     button {
         font-size: 1rem;
