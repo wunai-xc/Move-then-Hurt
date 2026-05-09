@@ -8,18 +8,30 @@ public class GameState {
     private Player currentTurn = Player.PLAYER_A;
     private boolean gameOver = false;
     private Player winner = null;
-    private Map<Player, List<Card>> cardPool; // 可抽取的卡牌池
+
+    // 剩余可抽卡池（不含 King）
+    private Map<Player, List<Card>> cardPool;
+    // 手牌
+    private Map<Player, List<Card>> hands;
+    // 国王位置
     private Map<Player, int[]> kingPos = new HashMap<>();
 
-    // 初始化棋盘、放置国王
-    public void init(CardLoader loader) {
-        // 加载所有卡牌到pool（深拷贝，避免引用污染）
-        List<Card> allCards = loader.getAllCards();
-        cardPool = new HashMap<>();
-        cardPool.put(Player.PLAYER_A, new ArrayList<>(allCards));
-        cardPool.put(Player.PLAYER_B, new ArrayList<>(allCards));
+    private Random random = new Random();
 
-        // 放置国王: A在第4行中间(4,2), B在第0行中间(0,2)
+    // 初始化棋盘、卡池、手牌和国王
+    public void init(CardLoader loader) {
+        // 卡池只包含普通卡（不包含 King）
+        List<Card> normalCards = loader.getAllNormalCards();
+        cardPool = new HashMap<>();
+        cardPool.put(Player.PLAYER_A, new ArrayList<>(normalCards));
+        cardPool.put(Player.PLAYER_B, new ArrayList<>(normalCards));
+
+        // 手牌初始为空
+        hands = new HashMap<>();
+        hands.put(Player.PLAYER_A, new ArrayList<>());
+        hands.put(Player.PLAYER_B, new ArrayList<>());
+
+        // 放置国王
         Card kingCard = loader.getKingCard();
         Unit kingA = new Unit(kingCard, Player.PLAYER_A, true);
         Unit kingB = new Unit(kingCard, Player.PLAYER_B, true);
@@ -29,7 +41,39 @@ public class GameState {
         kingPos.put(Player.PLAYER_B, new int[]{0, 2});
     }
 
-    // 获取/设置棋盘上的单位
+    // ========== 卡牌管理 ==========
+
+    // 抽卡：从卡池随机抽一张加入手牌（不自动上场）
+    public boolean drawCard(Player player) {
+        List<Card> pool = cardPool.get(player);
+        if (pool == null || pool.isEmpty()) return false;
+        List<Card> hand = hands.get(player);
+        // 手牌上限可配置，这里设为 6
+        if (hand.size() >= 6) return false;
+        int idx = random.nextInt(pool.size());
+        Card card = pool.remove(idx);
+        hand.add(card);
+        return true;
+    }
+
+    // 部署：从手牌中移除指定索引的卡牌，放置到棋盘位置
+    public boolean deployCard(Player player, int cardIndex, int row, int col) {
+        // 棋盘边界及空格检查
+        if (row < 0 || row >= 5 || col < 0 || col >= 5) return false;
+        if (board[row][col] != null) return false;
+        // 只能在己方半场部署
+        if (player == Player.PLAYER_A && (row != 3 && row != 4)) return false;
+        if (player == Player.PLAYER_B && (row != 0 && row != 1)) return false;
+
+        List<Card> hand = hands.get(player);
+        if (cardIndex < 0 || cardIndex >= hand.size()) return false;
+        Card card = hand.remove(cardIndex);
+        board[row][col] = new Unit(card, player, false);
+        return true;
+    }
+
+    // ========== 棋盘操作 ==========
+
     public Unit getUnit(int x, int y) {
         if (x < 0 || x >= 5 || y < 0 || y >= 5) return null;
         return board[x][y];
@@ -45,7 +89,8 @@ public class GameState {
         return board;
     }
 
-    // 获取/设置当前回合玩家
+    // ========== 回合与游戏状态 ==========
+
     public Player getCurrentTurn() {
         return currentTurn;
     }
@@ -54,7 +99,6 @@ public class GameState {
         this.currentTurn = currentTurn;
     }
 
-    // 游戏结束状态及胜者
     public boolean isGameOver() {
         return gameOver;
     }
@@ -71,7 +115,8 @@ public class GameState {
         this.winner = winner;
     }
 
-    // 卡池管理
+    // ========== 卡池与手牌访问 ==========
+
     public Map<Player, List<Card>> getCardPool() {
         return cardPool;
     }
@@ -80,7 +125,16 @@ public class GameState {
         return cardPool.get(player);
     }
 
-    // 国王位置管理
+    public Map<Player, List<Card>> getHands() {
+        return hands;
+    }
+
+    public List<Card> getHand(Player player) {
+        return hands.get(player);
+    }
+
+    // ========== 国王位置 ==========
+
     public Map<Player, int[]> getKingPos() {
         return kingPos;
     }
@@ -91,32 +145,5 @@ public class GameState {
 
     public void setKingPos(Player player, int[] pos) {
         kingPos.put(player, pos);
-    }
-
-    // 辅助方法：深拷贝整个游戏状态（用于回滚或日志，可选）
-    public GameState deepCopy() {
-        GameState copy = new GameState();
-        // 复制棋盘
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                if (board[i][j] != null) {
-                    copy.board[i][j] = board[i][j].deepCopy();
-                }
-            }
-        }
-        copy.currentTurn = this.currentTurn;
-        copy.gameOver = this.gameOver;
-        copy.winner = this.winner;
-        // 复制卡池
-        copy.cardPool = new HashMap<>();
-        for (Player p : Player.values()) {
-            copy.cardPool.put(p, new ArrayList<>(this.cardPool.get(p)));
-        }
-        // 复制国王位置
-        for (Player p : Player.values()) {
-            int[] pos = this.kingPos.get(p);
-            if (pos != null) copy.kingPos.put(p, new int[]{pos[0], pos[1]});
-        }
-        return copy;
     }
 }
