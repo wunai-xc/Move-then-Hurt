@@ -22,7 +22,7 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.put(session.getId(), session);
         sendState(session);
     }
@@ -47,25 +47,35 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
                     Player drawPlayer = Player.valueOf((String) json.get("player"));
                     gameService.drawCard(drawPlayer);
                     break;
+                case "deploy":
+                    Player deployPlayer = Player.valueOf((String) json.get("player"));
+                    int cardIndex = (int) json.get("cardIndex");
+                    int row = (int) json.get("row");
+                    int col = (int) json.get("col");
+                    gameService.deployUnit(deployPlayer, cardIndex, row, col);
+                    break;
                 case "reset":
                     gameService.resetGame();
                     break;
                 default:
+                    // 未知 action，忽略
                     return;
             }
+            // 任何有效操作后广播新状态
             broadcastState();
         } catch (Exception e) {
             e.printStackTrace();
+            // 可选：向当前会话发送错误消息
         }
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         sessions.remove(session.getId());
     }
 
     @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception) {
+    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
         sessions.remove(session.getId());
         exception.printStackTrace();
     }
