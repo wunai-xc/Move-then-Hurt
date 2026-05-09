@@ -36,19 +36,19 @@ body {
     letter-spacing: 2px;
 }
 
-/* 棋盘网格 - 细线网格，无圆角 */
+/* 棋盘网格 - 竖长卡片 (宽80，高160，比例1:2) */
 .board {
     display: grid;
-    grid-template-columns: repeat(5, 110px);
-    grid-template-rows: repeat(5, 90px);
-    gap: 1px;               /* 间隙为1px，形成细线 */
-    background-color: #2c1e12;  /* 网格线颜色（深褐色） */
+    grid-template-columns: repeat(5, 80px);
+    grid-template-rows: repeat(5, 160px);
+    gap: 1px;               /* 白色细线网格 */
+    background-color: white; /* 网格线为白色 */
     padding: 0;
-    box-shadow: inset 0 0 0 1px #2c1e12, 0 15px 25px rgba(0,0,0,0.4);
+    box-shadow: 0 15px 25px rgba(0,0,0,0.4);
     margin-bottom: 24px;
 }
 
-/* 卡片单元格 - 直角，牛皮纸色 */
+/* 卡片单元格 - 牛皮纸色，无圆角，竖长布局 */
 .cell {
     background: #d4b48c;
     background-image: radial-gradient(circle at 25% 40%, rgba(255,245,215,0.3) 2%, transparent 2.5%),
@@ -56,48 +56,51 @@ body {
     background-size: 25px 25px, 30px 30px;
     display: flex;
     flex-direction: column;
-    padding: 8px 6px;
+    padding: 12px 6px 8px 6px;  /* 上下内边距增加，适应高度 */
     cursor: pointer;
     transition: all 0.1s ease;
-    border: none;          /* 圆角取消，边框由.board的gap提供 */
+    border: none;
     position: relative;
 }
 
-/* 玩家 A 阵营：左侧彩色条（可保留色块区分） */
+/* 玩家 A 阵营：左侧深红色竖条 */
 .cell.player_a {
     box-shadow: inset 3px 0 0 0 #b85c1a;
 }
 
-/* 玩家 B 阵营：左侧彩色条 */
+/* 玩家 B 阵营：左侧深蓝色竖条 */
 .cell.player_b {
     box-shadow: inset 3px 0 0 0 #2e6ac9;
 }
 
-/* 国王卡牌：金色纹理 */
+/* 国王卡牌：金色纹理，不加金色边框 */
 .cell.king {
     background: #cd9e6b;
     background-image: repeating-linear-gradient(45deg, rgba(255,215,0,0.2) 0px, rgba(255,215,0,0.2) 2px, transparent 2px, transparent 8px);
     box-shadow: inset 0 0 0 2px gold;
 }
 
-/* 卡片顶部栏 */
+/* 卡片顶部栏 - 适应竖长卡片，信息紧凑但可读 */
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 6px;
-    font-size: 0.7rem;
+    margin-bottom: 12px;
+    font-size: 0.75rem;
     font-weight: bold;
-    padding: 0 2px;
+    padding: 0 4px;
 }
 
 .card-name {
     font-weight: bold;
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     background: rgba(0, 0, 0, 0.2);
-    padding: 2px 8px;
+    padding: 2px 6px;
     white-space: nowrap;
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .card-hp {
@@ -110,62 +113,51 @@ body {
     font-family: monospace;
 }
 
-/* 方向网格 3x3 - 直角 */
-.card-directions {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    gap: 2px;
-    aspect-ratio: 1 / 1;
-    background: #c9a87b;
-    padding: 2px;
-    margin-top: 4px;
+/* 方向标记容器（占满整个卡片） */
+.direction-markers-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
 }
 
-/* 每个方向格子 */
-.dir-cell {
-    position: relative;
+/* 单个方向标记 - 位置自适应百分比 */
+.direction-marker {
+    position: absolute;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: #fcf3e0;
-}
-
-/* 中心格留空 */
-.dir-cell.center {
-    background: transparent;
-    box-shadow: none;
-}
-
-/* 内圈箭头（移动） */
-.dir-arrow {
-    font-size: 0.9rem;
-    color: #2c6e2c;
-    z-index: 2;
-}
-
-/* 外圈X（攻击） */
-.dir-attack {
-    position: absolute;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: bold;
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    pointer-events: none;
+}
+
+/* 移动箭头样式 */
+.move-arrow {
+    color: #2c8c2c;
+    font-size: 1rem;
+    line-height: 1;
+    text-shadow: 0 0 1px white;
+}
+
+/* 攻击 X 样式 */
+.attack-x {
     color: #c7254e;
-    opacity: 0.9;
-    text-shadow: 0 0 2px white;
-    z-index: 1;
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 1;
+    text-shadow: 0 0 1px white;
 }
 
-/* 只有攻击，没有移动时，X 居中 */
-.dir-cell:not(:has(.dir-arrow)) .dir-attack {
-    position: static;
-    display: block;
-    font-size: 1.1rem;
-}
-
-/* 同时有移动和攻击 */
-.dir-cell:has(.dir-arrow) .dir-attack {
-    opacity: 0.7;
-    font-size: 1.2rem;
+/* 同时有移动和攻击时，上下排列 */
+.direction-marker .move-arrow + .attack-x {
+    margin-top: -2px;
 }
 
 /* 按钮区域 */
@@ -229,21 +221,27 @@ button#resetBtn {
     font-weight: bold;
 }
 
-/* 移动端响应式 */
+/* 移动端响应式 - 竖长卡片自动适配屏幕宽度 */
 @media (max-width: 700px) {
     .board {
-        grid-template-columns: repeat(5, 15vw);
-        grid-template-rows: repeat(5, 13vw);
+        grid-template-columns: repeat(5, 13vw);
+        grid-template-rows: repeat(5, 26vw);  /* 保持1:2比例 */
         gap: 1px;
     }
     .card-header {
-        font-size: 2.5vw;
+        font-size: 2.3vw;
+        margin-bottom: 2vw;
     }
     .card-name {
-        font-size: 2.8vw;
-        padding: 1px 4px;
+        font-size: 2.5vw;
+        padding: 1px 2px;
     }
-    .dir-arrow, .dir-attack {
+    .direction-marker {
+        font-size: 3vw;
+        width: 5vw;
+        height: 5vw;
+    }
+    .move-arrow, .attack-x {
         font-size: 3vw;
     }
     button {
