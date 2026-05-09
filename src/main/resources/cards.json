@@ -33,5 +33,5 @@
     "damage": 0,
     "move":["N","NE","E","SE","S","SW","W","NW"],
     "attack": []
-  },
+  }
 ]
