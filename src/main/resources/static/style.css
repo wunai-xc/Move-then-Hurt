@@ -52,10 +52,12 @@ body {
     margin-bottom: 24px;
 }
 
-/* 卡片单元格 */
+/* 卡片单元格 - 牛皮纸色 */
 .cell {
-    background: #eed9bb;
-    background: radial-gradient(ellipse at 30% 30%, #fdf0df, #dbbd92);
+    background: #d4b48c;
+    background-image: radial-gradient(circle at 25% 40%, rgba(255,245,215,0.3) 2%, transparent 2.5%),
+                      radial-gradient(circle at 75% 80%, rgba(160,100,40,0.1) 1.5%, transparent 2%);
+    background-size: 25px 25px, 30px 30px;
     border-radius: 16px;
     box-shadow: inset 0 1px 4px rgba(0,0,0,0.2), 0 2px 5px rgba(0,0,0,0.2);
     display: flex;
@@ -63,23 +65,25 @@ body {
     padding: 6px 8px;
     cursor: pointer;
     transition: all 0.1s ease;
-    border: 1px solid #f3e5c0;
+    border: 1px solid #e5cbaa;
 }
 
-/* 玩家颜色区分 */
+/* 玩家 A 阵营标识：红褐色边框 */
 .cell.player_a {
-    background: radial-gradient(ellipse at 30% 30%, #ffd4b0, #e09d6e);
-    box-shadow: inset 0 0 0 2px #c95a2e, 0 2px 5px black;
+    box-shadow: inset 0 0 0 2px #b85c1a, 0 2px 5px black;
+    border-top: 1px solid #ffb347;
 }
 
+/* 玩家 B 阵营标识：深蓝色边框 */
 .cell.player_b {
-    background: radial-gradient(ellipse at 30% 30%, #b0d4ff, #6e9ee0);
     box-shadow: inset 0 0 0 2px #2e6ac9, 0 2px 5px black;
+    border-top: 1px solid #7db9ff;
 }
 
-/* 国王特殊标识 */
+/* 国王卡牌：保留牛皮纸底色，增加金色装饰纹理 */
 .cell.king {
-    background: radial-gradient(ellipse at 30% 30%, #ffec80, #e0b84d);
+    background: #cd9e6b;
+    background-image: repeating-linear-gradient(45deg, rgba(255,215,0,0.2) 0px, rgba(255,215,0,0.2) 2px, transparent 2px, transparent 8px);
     box-shadow: inset 0 0 0 3px gold, 0 0 0 2px #b8860b;
 }
 
@@ -106,13 +110,11 @@ body {
 
 .card-hp {
     color: #8bc34a;
-    /* 绿色 */
     font-family: monospace;
 }
 
 .card-dmg {
     color: #ff8a5c;
-    /* 橙色 */
     font-family: monospace;
 }
 
