@@ -1,6 +1,5 @@
- package com.example.cardgame.controller;
+package com.example.cardgame.controller;
 
-import com.example.cardgame.model.GameState;
 import com.example.cardgame.model.Player;
 import com.example.cardgame.service.GameService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +15,6 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
 
     private final GameService gameService;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    // 存储所有活跃会话
     private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
 
     public GameWebSocketHandler(GameService gameService) {
@@ -24,9 +22,8 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+    public void afterConnectionEstablished(WebSocketSession session) {
         sessions.put(session.getId(), session);
-        // 发送当前完整游戏状态给新连接的客户端
         sendState(session);
     }
 
@@ -54,32 +51,28 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
                     gameService.resetGame();
                     break;
                 default:
-                    // 未知 action
                     return;
             }
-            // 任何有效操作后广播新状态
             broadcastState();
         } catch (Exception e) {
             e.printStackTrace();
-            // 可向当前会话发送错误消息，但为简洁略过
         }
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         sessions.remove(session.getId());
     }
 
     @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+    public void handleTransportError(WebSocketSession session, Throwable exception) {
         sessions.remove(session.getId());
         exception.printStackTrace();
     }
 
     private void sendState(WebSocketSession session) {
         try {
-            GameState state = gameService.getState();
-            String stateJson = objectMapper.writeValueAsString(state);
+            String stateJson = objectMapper.writeValueAsString(gameService.getState());
             session.sendMessage(new TextMessage(stateJson));
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,11 +81,10 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
 
     private void broadcastState() {
         try {
-            GameState state = gameService.getState();
-            String stateJson = objectMapper.writeValueAsString(state);
-            for (WebSocketSession session : sessions.values()) {
-                if (session.isOpen()) {
-                    session.sendMessage(new TextMessage(stateJson));
+            String stateJson = objectMapper.writeValueAsString(gameService.getState());
+            for (WebSocketSession sess : sessions.values()) {
+                if (sess.isOpen()) {
+                    sess.sendMessage(new TextMessage(stateJson));
                 }
             }
         } catch (Exception e) {
