@@ -1,1 +1,197 @@
- 
+/* 全局样式 */
+* {
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body {
+    background: linear-gradient(145deg, #1a472a 0%, #0e2a1a 100%);
+    font-family: 'Segoe UI', '华文楷书', 'Microsoft YaHei', 'SimHei', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+/* 游戏主容器 */
+.game-container {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 48px;
+    padding: 24px 32px 32px;
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(2px);
+}
+
+/* 回合指示器 */
+.turn-indicator {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    background: #2c1e12;
+    background: linear-gradient(135deg, #3e2a1f, #1f140b);
+    border-radius: 60px;
+    color: #f7e9b0;
+    text-shadow: 0 2px 3px black;
+    box-shadow: inset 0 1px 3px rgba(255,255,200,0.3), 0 5px 10px rgba(0,0,0,0.3);
+    letter-spacing: 2px;
+}
+
+/* 棋盘网格 */
+.board {
+    display: grid;
+    grid-template-columns: repeat(5, 96px);
+    grid-template-rows: repeat(5, 96px);
+    gap: 10px;
+    background: #6b4c3b;
+    background: radial-gradient(circle at 30% 20%, #8b5e3c, #4a2e1e);
+    padding: 20px;
+    border-radius: 36px;
+    box-shadow: inset 0 0 0 2px #c9a87b, 0 15px 25px rgba(0,0,0,0.4);
+    margin-bottom: 24px;
+}
+
+/* 网格单元格（棋盘格） */
+.cell {
+    background: #eed9bb;
+    background: radial-gradient(ellipse at 30% 30%, #fdf0df, #dbbd92);
+    border-radius: 20px;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.2), 0 2px 5px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 8px 4px;
+    transition: all 0.1s ease;
+    cursor: pointer;
+    color: #2c1a0c;
+    border: 1px solid #f3e5c0;
+}
+
+/* 玩家颜色区分 */
+.cell.player_a {
+    background: radial-gradient(ellipse at 30% 30%, #ffd4b0, #e09d6e);
+    box-shadow: inset 0 0 0 2px #c95a2e, 0 2px 5px black;
+}
+
+.cell.player_b {
+    background: radial-gradient(ellipse at 30% 30%, #b0d4ff, #6e9ee0);
+    box-shadow: inset 0 0 0 2px #2e6ac9, 0 2px 5px black;
+}
+
+/* 国王特殊标识 */
+.cell.king {
+    background: radial-gradient(ellipse at 30% 30%, #ffec80, #e0b84d);
+    box-shadow: inset 0 0 0 3px gold, 0 0 0 2px #b8860b;
+}
+
+.cell.king::before {
+    content: "👑";
+    font-size: 1.4rem;
+    display: block;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+/* 卡牌文字布局 */
+.cell span {
+    display: block;
+    font-size: 0.7rem;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    padding: 1px 4px;
+    border-radius: 12px;
+    margin-top: 2px;
+}
+
+/* 按钮区域 */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+button {
+    background: #3b2a1f;
+    border: none;
+    font-size: 1.3rem;
+    font-weight: bold;
+    padding: 12px 28px;
+    border-radius: 60px;
+    color: #fff2cf;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 0 #1e130b;
+    font-family: inherit;
+    letter-spacing: 2px;
+}
+
+button:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #1e130b;
+}
+
+button#moveModeBtn {
+    background: #4a5b2e;
+    box-shadow: 0 4px 0 #2a3518;
+}
+
+button#drawBtn {
+    background: #3e6b4f;
+    box-shadow: 0 4px 0 #1e3e2c;
+}
+
+button#resetBtn {
+    background: #7a4c2c;
+    box-shadow: 0 4px 0 #4d2e16;
+}
+
+/* 移动模式开启时的指示 */
+.move-mode-active {
+    background: #a7772e !important;
+    box-shadow: 0 0 0 3px #ffd966, 0 4px 0 #5e3a15 !important;
+}
+
+/* 游戏结束信息 */
+.message {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.3rem;
+    background: #1a1a1a;
+    display: inline-block;
+    width: auto;
+    padding: 8px 25px;
+    border-radius: 40px;
+    color: #ffc285;
+    background: #2a2418;
+    font-weight: bold;
+}
+
+/* 响应式：手机屏幕缩小格子 */
+@media (max-width: 700px) {
+    .board {
+        grid-template-columns: repeat(5, 15vw);
+        grid-template-rows: repeat(5, 15vw);
+        gap: 8px;
+        padding: 12px;
+    }
+    .cell {
+        font-size: 0.6rem;
+        padding: 3px;
+    }
+    button {
+        font-size: 1rem;
+        padding: 8px 16px;
+    }
+    .turn-indicator {
+        font-size: 1.2rem;
+    }
+}
