@@ -13,7 +13,7 @@ import java.util.*;
 
 @Component
 public class CardLoader {
-    private List<Card> allCards = new ArrayList<>();
+    private List<Card> allNormalCards = new ArrayList<>();  // 不含 King 的普通卡牌列表
     private Card kingCard;
 
     @PostConstruct
@@ -22,7 +22,7 @@ public class CardLoader {
             ObjectMapper mapper = new ObjectMapper();
             InputStream is = new ClassPathResource("cards.json").getInputStream();
             List<Map<String, Object>> rawCards = mapper.readValue(is, new TypeReference<>() {});
-            System.out.println("成功加载 cards.json，共 " + rawCards.size() + " 张卡牌");
+            System.out.println("成功加载 cards.json，共 " + rawCards.size() + " 条记录");
 
             for (Map<String, Object> raw : rawCards) {
                 String name = (String) raw.get("name");
@@ -31,17 +31,20 @@ public class CardLoader {
                 Set<Direction> move = parseDirections((List<String>) raw.get("move"));
                 Set<Direction> attack = parseDirections((List<String>) raw.get("attack"));
                 Card card = new Card(name, hp, dmg, move, attack);
-                allCards.add(card);
-                System.out.println("已加载卡牌: " + name);
                 if (name.equals("King")) {
                     kingCard = card;
+                    System.out.println("国王卡牌加载成功: " + name);
+                } else {
+                    allNormalCards.add(card);
+                    System.out.println("普通卡牌加载成功: " + name);
                 }
             }
 
             if (kingCard == null) {
-                throw new IllegalStateException("cards.json 中未找到名称为 'King' 的卡牌！");
+                throw new IllegalStateException("cards.json 中未找到名为 'King' 的卡牌！");
             }
-            System.out.println("国王卡牌加载成功: " + kingCard.getName());
+
+            System.out.println("共加载普通卡牌 " + allNormalCards.size() + " 张");
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("加载 cards.json 失败", e);
@@ -61,10 +64,12 @@ public class CardLoader {
         return set;
     }
 
-    public List<Card> getAllCards() {
-        return allCards;
+    // 获取所有普通卡牌（抽卡池用，不含 King）
+    public List<Card> getAllNormalCards() {
+        return allNormalCards;
     }
 
+    // 获取国王卡牌
     public Card getKingCard() {
         return kingCard;
     }
