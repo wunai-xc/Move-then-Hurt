@@ -18,60 +18,47 @@ public class GameService {
         resetGame();
     }
 
+    // 重置游戏：初始化棋盘、卡池、手牌，然后双方各抽 3 张初始手牌
     public void resetGame() {
         System.out.println("========== 重置游戏 ==========");
         state = new GameState();
         state.init(loader);
-        // 双方起始抽3张卡并部署
+        // 双方各抽 3 张初始手牌（从普通卡池中抽，不含 King）
         for (int i = 0; i < 3; i++) {
-            drawAndDeploy(Player.PLAYER_A);
-            drawAndDeploy(Player.PLAYER_B);
+            drawCard(Player.PLAYER_A);
+            drawCard(Player.PLAYER_B);
         }
         System.out.println("resetGame 完成，当前棋盘状态：");
         printBoard();
     }
 
-    private void drawAndDeploy(Player player) {
-        List<Card> pool = state.getCardPool().get(player);
-        if (pool == null || pool.isEmpty()) {
-            System.out.println("玩家 " + player + " 卡池已空，无法抽卡");
-            return;
-        }
-        Card card = pool.remove(random.nextInt(pool.size()));
-        System.out.println("玩家 " + player + " 抽到卡牌：" + card.getName());
-
-        // 寻找合法部署位置 (己方半场: A行3-4, B行0-1)
-        List<int[]> emptySpots = new ArrayList<>();
-        int[] rows = (player == Player.PLAYER_A) ? new int[]{3, 4} : new int[]{0, 1};
-        for (int row : rows) {
-            for (int col = 0; col < 5; col++) {
-                if (state.getUnit(row, col) == null) {
-                    emptySpots.add(new int[]{row, col});
-                }
+    // 抽卡（仅抽到手牌，不自动上场）
+    public boolean drawCard(Player player) {
+        if (state.isGameOver() || state.getCurrentTurn() != player) return false;
+        boolean success = state.drawCard(player);
+        if (success) {
+            checkVictory();
+            if (!state.isGameOver()) {
+                state.setCurrentTurn(player == Player.PLAYER_A ? Player.PLAYER_B : Player.PLAYER_A);
             }
         }
-        if (!emptySpots.isEmpty()) {
-            int[] pos = emptySpots.get(random.nextInt(emptySpots.size()));
-            state.setUnit(pos[0], pos[1], new Unit(card, player, false));
-            System.out.println("→ 部署到 (" + pos[0] + "," + pos[1] + ")");
-        } else {
-            System.out.println("→ 己方半场无空格，卡牌弃掉");
-        }
+        return success;
     }
 
-    // 打印棋盘（便于调试）
-    private void printBoard() {
-        for (int i = 0; i < 5; i++) {
-            StringBuilder row = new StringBuilder();
-            for (int j = 0; j < 5; j++) {
-                Unit u = state.getUnit(i, j);
-                if (u == null) row.append(" . ");
-                else row.append(u.getCard().getName().substring(0, 1)).append(u.getOwner() == Player.PLAYER_A ? "A" : "B").append(" ");
+    // 部署：从手牌中选择一张卡，放置到棋盘己方半场空格
+    public boolean deployUnit(Player player, int cardIndex, int row, int col) {
+        if (state.isGameOver() || state.getCurrentTurn() != player) return false;
+        boolean success = state.deployCard(player, cardIndex, row, col);
+        if (success) {
+            checkVictory();
+            if (!state.isGameOver()) {
+                state.setCurrentTurn(player == Player.PLAYER_A ? Player.PLAYER_B : Player.PLAYER_A);
             }
-            System.out.println(row);
         }
+        return success;
     }
 
+    // 移动单位（原有逻辑不变）
     public boolean moveUnit(Player player, int fromX, int fromY, int toX, int toY) {
         if (state.isGameOver() || state.getCurrentTurn() != player) return false;
         Unit unit = state.getUnit(fromX, fromY);
@@ -164,14 +151,17 @@ public class GameService {
         }
     }
 
-    public boolean drawCard(Player player) {
-        if (state.isGameOver() || state.getCurrentTurn() != player) return false;
-        drawAndDeploy(player);
-        checkVictory();
-        if (!state.isGameOver()) {
-            state.setCurrentTurn(player == Player.PLAYER_A ? Player.PLAYER_B : Player.PLAYER_A);
+    // 打印简易棋盘（调试用）
+    private void printBoard() {
+        for (int i = 0; i < 5; i++) {
+            StringBuilder row = new StringBuilder();
+            for (int j = 0; j < 5; j++) {
+                Unit u = state.getUnit(i, j);
+                if (u == null) row.append(" . ");
+                else row.append(u.getCard().getName().substring(0, 1)).append(u.getOwner() == Player.PLAYER_A ? "A" : "B").append(" ");
+            }
+            System.out.println(row);
         }
-        return true;
     }
 
     public GameState getState() {
