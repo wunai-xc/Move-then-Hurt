@@ -4,31 +4,44 @@ let boardState;
 let moveMode = false;
 let selectedFrom = null;
 
-// 方向映射：文字 → 箭头符号
+// 方向映射表（用于显示箭头）
 const arrowIcon = {
     'N': '↑', 'NE': '↗', 'E': '→', 'SE': '↘',
     'S': '↓', 'SW': '↙', 'W': '←', 'NW': '↖'
 };
 
-// 3x3 网格中的方向顺序（索引0~8，中心为 null）
-const dirGrid = [
-    'N', 'NE', 'E',
-    'NW', null, 'SE',
-    'W', 'SW', 'S'
-];
+// 八个方向及其在卡片上的定位（绝对位置百分比）
+const directionPositions = {
+    'N':  { top: '0%', left: '50%', transform: 'translate(-50%, -50%)' },
+    'NE': { top: '0%', left: '100%', transform: 'translate(-50%, -50%)' },
+    'E':  { top: '50%', left: '100%', transform: 'translate(-50%, -50%)' },
+    'SE': { top: '100%', left: '100%', transform: 'translate(-50%, -50%)' },
+    'S':  { top: '100%', left: '50%', transform: 'translate(-50%, -50%)' },
+    'SW': { top: '100%', left: '0%', transform: 'translate(-50%, -50%)' },
+    'W':  { top: '50%', left: '0%', transform: 'translate(-50%, -50%)' },
+    'NW': { top: '0%', left: '0%', transform: 'translate(-50%, -50%)' }
+};
 
-// 生成方向格子的 HTML
-function getDirectionsHtml(moveSet, attackSet) {
-    return dirGrid.map(dir => {
-        if (dir === null) {
-            return `<div class="dir-cell center"></div>`;
-        }
+// 生成方向标记 HTML（箭头和 X 直接印在边缘）
+function getDirectionMarkers(moveSet, attackSet) {
+    let markersHtml = '';
+    for (const [dir, pos] of Object.entries(directionPositions)) {
         const hasMove = moveSet.has(dir);
         const hasAttack = attackSet.has(dir);
-        const inner = hasMove ? `<span class="dir-arrow">${arrowIcon[dir]}</span>` : '';
-        const outer = hasAttack ? `<span class="dir-attack">X</span>` : '';
-        return `<div class="dir-cell" data-dir="${dir}">${outer}${inner}</div>`;
-    }).join('');
+        if (!hasMove && !hasAttack) continue;
+        // 构建内部内容：移动箭头 + 攻击 X（可同时存在，用空格或并排）
+        let content = '';
+        if (hasMove) content += `<span class="move-arrow">${arrowIcon[dir]}</span>`;
+        if (hasAttack) content += `<span class="attack-x">X</span>`;
+        // 如果两者都有，用换行或空格分开（在狭小空间内上下排列）
+        if (hasMove && hasAttack) content = `<span class="move-arrow">${arrowIcon[dir]}</span><span class="attack-x">X</span>`;
+        markersHtml += `
+            <div class="direction-marker" style="top: ${pos.top}; left: ${pos.left}; transform: ${pos.transform};">
+                ${content}
+            </div>
+        `;
+    }
+    return markersHtml;
 }
 
 function connect() {
@@ -65,15 +78,15 @@ function renderBoard() {
             if (unit) {
                 const moveSet = new Set(unit.card.moveDirections);
                 const attackSet = new Set(unit.card.attackDirections);
-                const directionsHtml = getDirectionsHtml(moveSet, attackSet);
+                const markersHtml = getDirectionMarkers(moveSet, attackSet);
                 cell.innerHTML = `
                     <div class="card-header">
                         <div class="card-hp">血:${unit.currentHp}</div>
                         <div class="card-name">${unit.card.name}</div>
                         <div class="card-dmg">攻:${unit.card.damage}</div>
                     </div>
-                    <div class="card-directions">
-                        ${directionsHtml}
+                    <div class="direction-markers-container">
+                        ${markersHtml}
                     </div>
                 `;
                 cell.classList.add(unit.owner.toLowerCase());
