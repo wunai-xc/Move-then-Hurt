@@ -5,7 +5,7 @@
 }
 
 body {
-    background: linear-gradient(145deg, #1a472a 0%, #0e2a1a 100%);
+    background: white;
     font-family: 'Segoe UI', '华文楷书', 'Microsoft YaHei', 'SimHei', sans-serif;
     display: flex;
     justify-content: center;
@@ -16,10 +16,10 @@ body {
 }
 
 .game-container {
-    background: rgba(0, 0, 0, 0.4);
+    background: white;
     padding: 24px 32px 32px;
-    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-radius: 24px;
 }
 
 .turn-indicator {
@@ -28,12 +28,12 @@ body {
     font-weight: bold;
     padding: 12px 20px;
     margin-bottom: 20px;
-    background: #2c1e12;
-    background: linear-gradient(135deg, #3e2a1f, #1f140b);
-    color: #f7e9b0;
-    text-shadow: 0 2px 3px black;
-    box-shadow: inset 0 1px 3px rgba(255,255,200,0.3), 0 5px 10px rgba(0,0,0,0.3);
+    background: #f0f0f0;
+    color: #333;
+    text-shadow: none;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05), 0 2px 5px rgba(0,0,0,0.05);
     letter-spacing: 2px;
+    border-radius: 60px;
 }
 
 /* 棋盘网格 - 黑色细线，每个格子白色背景 */
@@ -41,10 +41,10 @@ body {
     display: grid;
     grid-template-columns: repeat(5, 80px);
     grid-template-rows: repeat(5, 160px);
-    gap: 1px;               /* 黑色网格线宽度 */
-    background-color: black; /* 底色黑色，gap 处显示黑线 */
+    gap: 1px;
+    background-color: black;
     padding: 0;
-    box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     margin-bottom: 24px;
 }
 
@@ -52,7 +52,7 @@ body {
 .cell {
     background-color: white;
     position: relative;
-    padding: 4px;           /* 卡牌与格子边缘的空白 */
+    padding: 4px;
     cursor: pointer;
 }
 
@@ -68,11 +68,11 @@ body {
     background-image: radial-gradient(circle at 25% 40%, rgba(255,245,215,0.3) 2%, transparent 2.5%),
                       radial-gradient(circle at 75% 80%, rgba(160,100,40,0.1) 1.5%, transparent 2%);
     background-size: 25px 25px, 30px 30px;
-    pointer-events: none;   /* 让点击穿透到格子 */
+    pointer-events: none;
     z-index: 0;
 }
 
-/* 玩家 A 阵营：左侧深红色竖条（作用于卡牌层） */
+/* 玩家 A 阵营：左侧深红色竖条 */
 .cell.has-unit.player_a::before {
     box-shadow: inset 3px 0 0 0 #b85c1a;
 }
@@ -117,6 +117,7 @@ body {
     z-index: 1;
 }
 
+/* 名称单独下移（但不完全居中） */
 .card-name {
     font-weight: bold;
     text-align: center;
@@ -127,16 +128,20 @@ body {
     max-width: 70px;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-top: 8px;      /* 下移8px，不居中 */
 }
 
+/* 血量/伤害颜色加深 */
 .card-hp {
-    color: #8bc34a;
+    color: #2d6a2d;       /* 深绿色 */
     font-family: monospace;
+    font-weight: bold;
 }
 
 .card-dmg {
-    color: #ff8a5c;
+    color: #b34e1a;       /* 深橙色/红褐色 */
     font-family: monospace;
+    font-weight: bold;
 }
 
 /* 方向标记容器 */
@@ -167,7 +172,7 @@ body {
 
 /* 移动箭头 */
 .move-arrow {
-    color: #2c8c2c;
+    color: #1f5c1f;       /* 深绿色箭头 */
     font-size: 1rem;
     line-height: 1;
     text-shadow: 0 0 1px white;
@@ -175,7 +180,7 @@ body {
 
 /* 攻击 X */
 .attack-x {
-    color: #c7254e;
+    color: #a4343e;       /* 深红色 X */
     font-size: 1rem;
     font-weight: bold;
     line-height: 1;
@@ -197,69 +202,69 @@ body {
 }
 
 button {
-    background: #3b2a1f;
+    background: #e0e0e0;
     border: none;
     font-size: 1.3rem;
     font-weight: bold;
     padding: 12px 28px;
-    color: #fff2cf;
+    color: #333;
     cursor: pointer;
     transition: all 0.2s;
-    box-shadow: 0 4px 0 #1e130b;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     font-family: inherit;
     letter-spacing: 2px;
+    border-radius: 40px;
 }
 
 button:active {
-    transform: translateY(2px);
-    box-shadow: 0 1px 0 #1e130b;
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 button#moveModeBtn {
-    background: #4a5b2e;
-    box-shadow: 0 4px 0 #2a3518;
+    background: #cfd8dc;
 }
 
 button#drawBtn {
-    background: #3e6b4f;
-    box-shadow: 0 4px 0 #1e3e2c;
+    background: #c8e6df;
 }
 
 button#resetBtn {
-    background: #7a4c2c;
-    box-shadow: 0 4px 0 #4d2e16;
+    background: #ffccbc;
 }
 
 .move-mode-active {
-    background: #a7772e !important;
-    box-shadow: 0 0 0 3px #ffd966, 0 4px 0 #5e3a15 !important;
+    background: #ffb74d !important;
+    box-shadow: 0 0 0 2px #ffa726;
+    color: white;
 }
 
 .message {
     text-align: center;
     margin-top: 20px;
-    font-size: 1.3rem;
-    background: #1a1a1a;
+    font-size: 1.1rem;
     display: inline-block;
     width: auto;
-    padding: 8px 25px;
-    color: #ffc285;
-    background: #2a2418;
-    font-weight: bold;
+    padding: 8px 20px;
+    border-radius: 30px;
+    color: #555;
+    background: #f5f5f5;
+    font-weight: normal;
 }
 
 /* 手牌区样式 */
 .hand-area {
     margin-top: 20px;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 12px;
-    padding: 10px;
-    color: white;
+    background: #f8f8f8;
+    border-radius: 16px;
+    padding: 12px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.02), 0 2px 6px rgba(0,0,0,0.05);
 }
 .hand-title {
     font-size: 1rem;
     margin-bottom: 8px;
     text-align: center;
+    color: #444;
 }
 .hand-container {
     display: flex;
@@ -279,12 +284,12 @@ button#resetBtn {
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
-    box-shadow: 0 2px 5px black;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     transition: transform 0.1s;
     color: black;
 }
 .hand-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
     background: #e0c090;
 }
 .hand-card-name {
@@ -297,8 +302,8 @@ button#resetBtn {
     gap: 8px;
     font-size: 0.7rem;
 }
-.hand-card-hp { color: #8bc34a; }
-.hand-card-dmg { color: #ff8a5c; }
+.hand-card-hp { color: #2d6a2d; }
+.hand-card-dmg { color: #b34e1a; }
 
 /* 移动端响应式 */
 @media (max-width: 700px) {
@@ -318,6 +323,7 @@ button#resetBtn {
         font-size: 2.5vw;
         padding: 1px 2px;
         max-width: 10vw;
+        margin-top: 1vw;       /* 响应式下移适当减少 */
     }
     .direction-marker {
         font-size: 3vw;
