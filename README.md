@@ -3,5 +3,7 @@
 我现在很怀念它于是想把它做成一款电子游戏以纪念我的过去
 它的主要内容就是：先移动后攻击
 # 
-我会抽空做出来  
-代码将使用Java
+前端使用了html css JavaScript
+后端使用了Java spring boot
+#
+游玩IP：https://move-then-hurt-production.up.railway.app/
