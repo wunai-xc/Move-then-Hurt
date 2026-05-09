@@ -40,7 +40,7 @@ body {
 .board {
     display: grid;
     grid-template-columns: repeat(5, 80px);
-    grid-template-rows: repeat(5, 160px);
+    grid-template-rows: repeat(5, 120px);  /* 高度改为120px，比例为1.5:1 */
     gap: 1px;
     background-color: black;
     padding: 0;
@@ -97,7 +97,7 @@ body {
     left: 0;
     width: 0;
     height: 0;
-    border-width: 20px 20px 0 0;
+    border-width: 16px 16px 0 0;  /* 等比缩小，适应更矮的卡片 */
     border-style: solid;
     border-color: #ffd700 transparent transparent transparent;
     pointer-events: none;
@@ -109,37 +109,37 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 12px;
-    font-size: 0.75rem;
+    margin-bottom: 6px;      /* 减少间距，适应新高度 */
+    font-size: 0.7rem;
     font-weight: bold;
     padding: 0 4px;
     position: relative;
     z-index: 1;
 }
 
-/* 名称单独下移（但不完全居中） */
+/* 名称下移，但适应较矮卡片 */
 .card-name {
     font-weight: bold;
     text-align: center;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     background: rgba(0, 0, 0, 0.2);
     padding: 2px 6px;
     white-space: nowrap;
     max-width: 70px;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-top: 8px;      /* 下移8px，不居中 */
+    margin-top: 4px;         /* 减小下移距离 */
 }
 
 /* 血量/伤害颜色加深 */
 .card-hp {
-    color: #2d6a2d;       /* 深绿色 */
+    color: #2d6a2d;
     font-family: monospace;
     font-weight: bold;
 }
 
 .card-dmg {
-    color: #b34e1a;       /* 深橙色/红褐色 */
+    color: #b34e1a;
     font-family: monospace;
     font-weight: bold;
 }
@@ -162,26 +162,26 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: 0.9rem;      /* 稍微缩小 */
     font-weight: bold;
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     margin: 0;
     pointer-events: none;
 }
 
 /* 移动箭头 */
 .move-arrow {
-    color: #1f5c1f;       /* 深绿色箭头 */
-    font-size: 1rem;
+    color: #1f5c1f;
+    font-size: 0.9rem;
     line-height: 1;
     text-shadow: 0 0 1px white;
 }
 
 /* 攻击 X */
 .attack-x {
-    color: #a4343e;       /* 深红色 X */
-    font-size: 1rem;
+    color: #a4343e;
+    font-size: 0.9rem;
     font-weight: bold;
     line-height: 1;
     text-shadow: 0 0 1px white;
@@ -276,7 +276,7 @@ button#resetBtn {
 .hand-card {
     background: #d4b48c;
     width: 70px;
-    height: 100px;
+    height: 105px;   /* 手牌也调整比例，接近1:1.5 */
     border-radius: 8px;
     padding: 6px;
     display: flex;
@@ -309,29 +309,29 @@ button#resetBtn {
 @media (max-width: 700px) {
     .board {
         grid-template-columns: repeat(5, 13vw);
-        grid-template-rows: repeat(5, 26vw);
+        grid-template-rows: repeat(5, 19.5vw);  /* 13vw * 1.5 = 19.5vw */
         gap: 1px;
     }
     .cell {
         padding: 2px;
     }
     .card-header {
-        font-size: 2.3vw;
-        margin-bottom: 2vw;
+        font-size: 2vw;
+        margin-bottom: 1vw;
     }
     .card-name {
-        font-size: 2.5vw;
+        font-size: 2.2vw;
         padding: 1px 2px;
         max-width: 10vw;
-        margin-top: 1vw;       /* 响应式下移适当减少 */
+        margin-top: 0.5vw;
     }
     .direction-marker {
-        font-size: 3vw;
-        width: 5vw;
-        height: 5vw;
+        font-size: 2.5vw;
+        width: 4vw;
+        height: 4vw;
     }
     .move-arrow, .attack-x {
-        font-size: 3vw;
+        font-size: 2.5vw;
     }
     button {
         font-size: 1rem;
@@ -342,12 +342,12 @@ button#resetBtn {
     }
     .hand-card {
         width: 12vw;
-        height: 18vw;
+        height: 18vw;  /* 近似1:1.5 */
     }
     .hand-card-name {
-        font-size: 2.5vw;
+        font-size: 2.2vw;
     }
     .hand-card-stats {
-        font-size: 2vw;
+        font-size: 1.8vw;
     }
 }
