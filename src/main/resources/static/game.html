@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move then Hurt - 对局</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="game-container">
+    <div class="turn-indicator" id="turnIndicator">当前回合: 红方</div>
+    <div id="board" class="board"></div>
+    <div class="hand-area">
+        <div class="hand-title">📜 手牌区</div>
+        <div id="hand" class="hand-container"></div>
+    </div>
+    <div class="controls">
+        <button id="drawBtn">🃏 抽卡</button>
+        <button id="resetBtn">🔄 重新开局</button>
+        <button id="exitBtn">🏠 退出游戏</button>
+    </div>
+    <div id="message" class="message"></div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

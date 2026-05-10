@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move then Hurt - 先移动后攻击</title>
+    <link rel="stylesheet" href="start.css">
+</head>
+<body>
+<div class="start-container">
+    <h1 class="game-title">Move then Hurt</h1>
+    <p class="subtitle">先移动，后攻击</p>
+    <div class="menu-buttons">
+        <button id="startGameBtn" class="menu-btn">开始游戏</button>
+        <button id="rulesBtn" class="menu-btn">游戏规则</button>
+    </div>
+    <div id="rulesModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>游戏规则</h2>
+            <ul>
+                <li>5x5 棋盘，红蓝双方各占两排，国王位于中间。</li>
+                <li>每回合可选择：移动单位、抽卡、部署手牌到己方两排。</li>
+                <li>移动后自动攻击攻击方向内的敌人。</li>
+                <li>卡牌有血量、伤害、移动方向和攻击方向（用箭头标注）。</li>
+                <li>国王死亡或被围堵则游戏结束。</li>
+                <li>更多细节请探索游戏！</li>
+            </ul>
+        </div>
+    </div>
+    <footer>🎮 怀念高中时代 | 2023-2025</footer>
+</div>
+<script src="start.js"></script>
+</body>
+</html>

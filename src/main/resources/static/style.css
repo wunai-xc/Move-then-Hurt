@@ -1,0 +1,202 @@
+* {
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body {
+    background: #FAF0E6;   /* 主色调 */
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+.game-container {
+    background: #F5F5F5;
+    padding: 20px 30px 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.turn-indicator {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 8px 16px;
+    margin-bottom: 20px;
+    background: #e0cbb0;
+    color: #4a2e1e;
+    letter-spacing: 2px;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(5, 50px);
+    grid-template-rows: repeat(5, 120px);
+    gap: 0;
+    background: #fff;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+
+.cell {
+    background: #FFFFF0;
+    position: relative;
+    padding: 4px;           /* 卡牌比格子小4px */
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+/* 有单位的格子，显示卡牌内容 */
+.cell.has-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 卡牌图片 */
+.card-img {
+    width: 42px;
+    height: 112px;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto;
+}
+
+/* 卡牌文字层（绝对定位在图片上方） */
+.card-info {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 4px;
+    font-size: 10px;
+    font-weight: bold;
+    color: #2c1e12;
+    background: rgba(255, 255, 240, 0.7);
+    pointer-events: none;
+}
+
+.card-name {
+    text-align: center;
+    background: rgba(0,0,0,0.3);
+    border-radius: 2px;
+    font-size: 10px;
+}
+.card-hp-dmg {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+}
+.card-hp { color: #2d6a2d; }
+.card-dmg { color: #b34e1a; }
+
+/* 方向标记容器 */
+.direction-markers {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+.direction-marker {
+    position: absolute;
+    font-size: 10px;
+    width: 16px;
+    text-align: center;
+}
+.move-arrow { color: #1f5c1f; }
+.attack-x { color: #a4343e; }
+
+/* 血量变深效果（通过滤镜） */
+.card-img.damaged {
+    filter: brightness(0.7) sepia(0.5);
+}
+
+/* 飘字动画 */
+.float-number {
+    position: absolute;
+    font-size: 14px;
+    font-weight: bold;
+    color: red;
+    text-shadow: 0 0 2px white;
+    pointer-events: none;
+    animation: floatUp 1s ease-out forwards;
+    z-index: 10;
+}
+@keyframes floatUp {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); }
+}
+
+/* 按钮样式：无圆角，触动反馈 */
+button {
+    background: #c0a080;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 8px 20px;
+    color: #2c1e12;
+    cursor: pointer;
+    transition: background 0.1s, transform 0.05s;
+    border-radius: 0;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+}
+button:active {
+    transform: translateY(1px);
+    background: #a08060;
+}
+button#drawBtn { background: #b8d0c0; }
+button#resetBtn { background: #e0b090; }
+button#exitBtn { background: #d0b8a0; }
+
+.message {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 1rem;
+    padding: 5px;
+    background: #e0d0c0;
+}
+
+.hand-area {
+    margin-top: 20px;
+    background: #F5F5F5;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}
+.hand-container {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    min-height: 100px;
+}
+.hand-card {
+    position: relative;
+    width: 50px;
+    cursor: pointer;
+    background: #FFFFF0;
+    border: 1px solid #aaa;
+    padding: 2px;
+}
+.hand-card img {
+    width: 42px;
+    height: 112px;
+    object-fit: cover;
+}
+.hand-card .card-info {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,240,0.8);
+}
