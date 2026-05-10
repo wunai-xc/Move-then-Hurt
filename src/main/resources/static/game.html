@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>movethenhurt - 卡牌战棋</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="game-container">
+    <div class="turn-indicator" id="turnIndicator">当前回合: PLAYER_A</div>
+
+    <!-- 棋盘 5x5 -->
+    <div id="board" class="board"></div>
+
+    <!-- 手牌区 -->
+    <div class="hand-area">
+        <div class="hand-title">📜 手牌区</div>
+        <div id="hand" class="hand-container"></div>
+    </div>
+
+    <!-- 操作按钮（仅保留抽卡和重置） -->
+    <div class="controls">
+        <button id="drawBtn">🃏 抽卡</button>
+        <button id="resetBtn">🔄 重新开局</button>
+    </div>
+
+    <div id="message" class="message"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
