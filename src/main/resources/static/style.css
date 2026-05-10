@@ -36,24 +36,25 @@ body {
     border-radius: 60px;
 }
 
-/* 棋盘网格 - 黑色细线，每个格子白色背景 */
+/* 棋盘网格 - 白色背景，浅灰色边框 */
 .board {
     display: grid;
     grid-template-columns: repeat(5, 120px);
-    grid-template-rows: repeat(5, 120px);  /* 高度改为120px，比例为1.5:1 */
-    gap: 1px;
-    background-color: black;
+    grid-template-rows: repeat(5, 120px);
+    gap: 0;
+    background-color: white;
     padding: 0;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     margin-bottom: 24px;
 }
 
-/* 每个格子：默认白色背景 */
+/* 每个格子：白色背景，浅灰色边框 */
 .cell {
     background-color: white;
     position: relative;
     padding: 4px;
     cursor: pointer;
+    border: 1px solid #e0e0e0;
 }
 
 /* 有卡牌的格子：显示独立卡牌层（牛皮纸色） */
@@ -97,7 +98,7 @@ body {
     left: 0;
     width: 0;
     height: 0;
-    border-width: 16px 16px 0 0;  /* 等比缩小，适应更矮的卡片 */
+    border-width: 16px 16px 0 0;
     border-style: solid;
     border-color: #ffd700 transparent transparent transparent;
     pointer-events: none;
@@ -109,7 +110,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 6px;      /* 减少间距，适应新高度 */
+    margin-bottom: 6px;
     font-size: 0.7rem;
     font-weight: bold;
     padding: 0 4px;
@@ -117,7 +118,6 @@ body {
     z-index: 1;
 }
 
-/* 名称下移，但适应较矮卡片 */
 .card-name {
     font-weight: bold;
     text-align: center;
@@ -128,10 +128,9 @@ body {
     max-width: 70px;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-top: 20px;         /* 减小下移距离 */
+    margin-top: 20px;
 }
 
-/* 血量/伤害颜色加深 */
 .card-hp {
     color: #2d6a2d;
     font-family: monospace;
@@ -162,7 +161,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 0.9rem;      /* 稍微缩小 */
+    font-size: 0.9rem;
     font-weight: bold;
     width: 24px;
     height: 24px;
@@ -221,16 +220,16 @@ button:active {
     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-button#moveModeBtn {
-    background: #cfd8dc;
-}
-
 button#drawBtn {
     background: #c8e6df;
 }
 
 button#resetBtn {
     background: #ffccbc;
+}
+
+button#exitBtn {
+    background: #d9c5b3;
 }
 
 .move-mode-active {
@@ -276,7 +275,7 @@ button#resetBtn {
 .hand-card {
     background: #d4b48c;
     width: 70px;
-    height: 105px;   /* 手牌也调整比例，接近1:1.5 */
+    height: 105px;
     border-radius: 8px;
     padding: 6px;
     display: flex;
@@ -309,11 +308,12 @@ button#resetBtn {
 @media (max-width: 700px) {
     .board {
         grid-template-columns: repeat(5, 13vw);
-        grid-template-rows: repeat(5, 19.5vw);  /* 13vw * 1.5 = 19.5vw */
-        gap: 1px;
+        grid-template-rows: repeat(5, 19.5vw);
+        gap: 0;
     }
     .cell {
         padding: 2px;
+        border: 1px solid #e0e0e0;
     }
     .card-header {
         font-size: 2vw;
@@ -342,7 +342,7 @@ button#resetBtn {
     }
     .hand-card {
         width: 12vw;
-        height: 18vw;  /* 近似1:1.5 */
+        height: 18vw;
     }
     .hand-card-name {
         font-size: 2.2vw;
