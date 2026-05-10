@@ -9,7 +9,6 @@ public class Card {
     private Set<Direction> moveDirections;
     private Set<Direction> attackDirections;
 
-    // 构造器
     public Card(String name, int hp, int damage, Set<Direction> move, Set<Direction> attack) {
         this.name = name;
         this.hp = hp;
@@ -18,7 +17,6 @@ public class Card {
         this.attackDirections = attack;
     }
 
-    // Getter 和 Setter
     public String getName() {
         return name;
     }
