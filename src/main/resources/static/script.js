@@ -7,7 +7,7 @@ let selectedFrom = null;
 let deployMode = false;
 let selectedCardIndex = null;
 
-// 方向映射表（用于显示箭头）
+// 方向映射表（用于显示箭头，与后端 Direction 枚举一致）
 const arrowIcon = {
     'N': '↑', 'NE': '↗', 'E': '→', 'SE': '↘',
     'S': '↓', 'SW': '↙', 'W': '←', 'NW': '↖'
@@ -25,7 +25,7 @@ const directionPositions = {
     'NW': { top: '0%', left: '0%', transform: 'translate(-50%, -50%)' }
 };
 
-// ---------- 辅助函数 ----------
+// ---------- 辅助函数：生成方向标记 HTML ----------
 function getDirectionMarkers(moveSet, attackSet) {
     let markersHtml = '';
     for (const [dir, pos] of Object.entries(directionPositions)) {
@@ -158,12 +158,13 @@ function handleCellClick(x, y) {
 
     // 移动模式（默认激活）
     if (!moveMode) {
-        // 理论上每一回合开始时 moveMode 会被重置为 true，但如果因某些原因失效，提示即可
         document.getElementById("message").innerText = "当前不能移动，请等待回合开始。";
         return;
     }
+
     const unit = boardState.board[x][y];
     if (selectedFrom === null) {
+        // 未选中任何单位：尝试选中己方单位
         if (unit && unit.owner === currentPlayer) {
             selectedFrom = [x, y];
             document.getElementById("message").innerText = `已选中 ${unit.card.name}，点击移动目标格子`;
@@ -171,6 +172,9 @@ function handleCellClick(x, y) {
             document.getElementById("message").innerText = "请先点击己方单位";
         }
     } else {
+        // 已选中单位，发送移动请求
+        // 前端仅发送坐标，由后端验证方向合法性
+        console.log(`移动请求: 从 (${selectedFrom[0]}, ${selectedFrom[1]}) 到 (${x}, ${y})`);
         socket.send(JSON.stringify({
             action: "move",
             player: currentPlayer,
@@ -199,7 +203,7 @@ function connect() {
         renderBoard();
         renderHand();
 
-        // 每回合开始时自动进入移动模式
+        // 每回合开始时自动进入移动模式，清除选中和部署模式
         moveMode = true;
         selectedFrom = null;
         deployMode = false;
