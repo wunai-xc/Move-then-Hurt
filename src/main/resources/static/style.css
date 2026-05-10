@@ -39,7 +39,7 @@ body {
 /* 棋盘网格 - 黑色细线，每个格子白色背景 */
 .board {
     display: grid;
-    grid-template-columns: repeat(5, 80px);
+    grid-template-columns: repeat(5, 120px);
     grid-template-rows: repeat(5, 120px);  /* 高度改为120px，比例为1.5:1 */
     gap: 1px;
     background-color: black;
