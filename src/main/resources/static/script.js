@@ -172,8 +172,7 @@ function handleCellClick(x, y) {
             document.getElementById("message").innerText = "请先点击己方单位";
         }
     } else {
-        // 已选中单位，发送移动请求
-        // 前端仅发送坐标，由后端验证方向合法性
+        // 已选中单位，发送移动请求（后端验证方向合法性）
         console.log(`移动请求: 从 (${selectedFrom[0]}, ${selectedFrom[1]}) 到 (${x}, ${y})`);
         socket.send(JSON.stringify({
             action: "move",
@@ -223,6 +222,7 @@ function connect() {
 function bindEvents() {
     const drawBtn = document.getElementById("drawBtn");
     const resetBtn = document.getElementById("resetBtn");
+    const exitBtn = document.getElementById("exitBtn");
 
     if (drawBtn) {
         drawBtn.onclick = () => {
@@ -240,6 +240,12 @@ function bindEvents() {
     if (resetBtn) {
         resetBtn.onclick = () => {
             socket.send(JSON.stringify({ action: "reset" }));
+        };
+    }
+
+    if (exitBtn) {
+        exitBtn.onclick = () => {
+            window.location.href = "/";
         };
     }
 }
