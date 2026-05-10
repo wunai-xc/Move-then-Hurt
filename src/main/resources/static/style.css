@@ -128,7 +128,7 @@ body {
     max-width: 70px;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-top: 60px;
+    margin-top: 50%;
 }
 
 .card-hp {
