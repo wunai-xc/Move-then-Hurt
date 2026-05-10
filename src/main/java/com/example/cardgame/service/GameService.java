@@ -18,12 +18,10 @@ public class GameService {
         resetGame();
     }
 
-    // 重置游戏：初始化棋盘、卡池、手牌，然后双方各抽 3 张初始手牌
     public void resetGame() {
         System.out.println("========== 重置游戏 ==========");
         state = new GameState();
         state.init(loader);
-        // 双方各抽 3 张初始手牌（从普通卡池中抽，不含 King）
         for (int i = 0; i < 3; i++) {
             drawCard(Player.PLAYER_A);
             drawCard(Player.PLAYER_B);
@@ -32,7 +30,6 @@ public class GameService {
         printBoard();
     }
 
-    // 抽卡（仅抽到手牌，不自动上场）
     public boolean drawCard(Player player) {
         if (state.isGameOver() || state.getCurrentTurn() != player) return false;
         boolean success = state.drawCard(player);
@@ -45,7 +42,6 @@ public class GameService {
         return success;
     }
 
-    // 部署：从手牌中选择一张卡，放置到棋盘己方半场空格
     public boolean deployUnit(Player player, int cardIndex, int row, int col) {
         if (state.isGameOver() || state.getCurrentTurn() != player) return false;
         boolean success = state.deployCard(player, cardIndex, row, col);
@@ -58,14 +54,28 @@ public class GameService {
         return success;
     }
 
-    // 移动单位（原有逻辑不变）
+    // 修正后的移动逻辑，确保方向判断正确
     public boolean moveUnit(Player player, int fromX, int fromY, int toX, int toY) {
         if (state.isGameOver() || state.getCurrentTurn() != player) return false;
         Unit unit = state.getUnit(fromX, fromY);
         if (unit == null || unit.getOwner() != player) return false;
         int dx = toX - fromX, dy = toY - fromY;
         Direction dir = getDirection(dx, dy);
-        if (dir == null || !unit.getCard().getMoveDirections().contains(dir)) return false;
+        if (dir == null) {
+            System.out.println("移动方向无效: dx=" + dx + ", dy=" + dy);
+            return false;
+        }
+
+        // 【关键】获取卡牌允许的移动方向集合
+        Set<Direction> allowedMoveDirs = unit.getCard().getMoveDirections();
+        System.out.println("单位 " + unit.getCard().getName() + " 允许的移动方向: " + allowedMoveDirs);
+        System.out.println("尝试移动方向: " + dir);
+
+        if (!allowedMoveDirs.contains(dir)) {
+            System.out.println("移动方向不允许！");
+            return false;
+        }
+
         if (toX < 0 || toX > 4 || toY < 0 || toY > 4) return false;
         if (state.getUnit(toX, toY) != null) return false;
 
@@ -79,10 +89,9 @@ public class GameService {
         // 自动攻击
         performAttack(unit, toX, toY);
 
-        // 检查胜利条件
+        // 检查胜利
         checkVictory();
 
-        // 切换回合（如果游戏未结束）
         if (!state.isGameOver()) {
             state.setCurrentTurn(player == Player.PLAYER_A ? Player.PLAYER_B : Player.PLAYER_A);
         }
@@ -120,7 +129,6 @@ public class GameService {
     }
 
     private void checkVictory() {
-        // 国王死亡判负
         for (Player p : Player.values()) {
             int[] pos = state.getKingPos().get(p);
             if (pos == null || state.getUnit(pos[0], pos[1]) == null) {
@@ -130,7 +138,6 @@ public class GameService {
                 return;
             }
         }
-        // 国王被围无法移动判负
         for (Player p : Player.values()) {
             int[] pos = state.getKingPos().get(p);
             boolean canMove = false;
@@ -151,7 +158,6 @@ public class GameService {
         }
     }
 
-    // 打印简易棋盘（调试用）
     private void printBoard() {
         for (int i = 0; i < 5; i++) {
             StringBuilder row = new StringBuilder();
