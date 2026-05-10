@@ -2,32 +2,33 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>movethenhurt - 卡牌战棋</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move then Hurt - 起始界面</title>
+    <link rel="stylesheet" href="start.css">
 </head>
 <body>
-<div class="game-container">
-    <div class="turn-indicator" id="turnIndicator">当前回合: PLAYER_A</div>
-
-    <!-- 棋盘 5x5 -->
-    <div id="board" class="board"></div>
-
-    <!-- 手牌区 -->
-    <div class="hand-area">
-        <div class="hand-title">📜 手牌区</div>
-        <div id="hand" class="hand-container"></div>
+<div class="start-container">
+    <h1 class="game-title">Move then Hurt</h1>
+    <p class="subtitle">先移动，后攻击</p>
+    <div class="menu-buttons">
+        <button id="startGameBtn" class="menu-btn">开始游戏</button>
+        <button id="rulesBtn" class="menu-btn">游戏规则</button>
     </div>
-
-    <!-- 操作按钮（仅保留抽卡和重置） -->
-    <div class="controls">
-        <button id="drawBtn">🃏 抽卡</button>
-        <button id="resetBtn">🔄 重新开局</button>
+    <div id="rulesModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>游戏规则</h2>
+            <ul>
+                <li>5x5 棋盘，双方各有一名国王（固定位置）。</li>
+                <li>每回合默认可移动一个己方单位（移动后自动攻击），或点击“抽卡”将一张牌加入手牌。</li>
+                <li>点击手牌中的卡牌，再点击己方半场空格即可部署单位。</li>
+                <li>移动和攻击方向显示在卡片边缘（绿色箭头为移动方向，红色X为攻击方向）。</li>
+                <li>击败对方国王或使其无路可走即可获胜。</li>
+            </ul>
+        </div>
     </div>
-
-    <div id="message" class="message"></div>
+    <footer>🎮 怀念高中时代 | 2023-2025</footer>
 </div>
-
-<script src="script.js"></script>
+<script src="start.js"></script>
 </body>
 </html>
