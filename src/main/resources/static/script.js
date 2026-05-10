@@ -59,7 +59,6 @@ function renderBoard() {
             cell.className = "cell";
             const unit = boardState.board[i][j];
             if (unit) {
-                // 标记有单位（用于 CSS 显示卡牌背景）
                 cell.classList.add("has-unit");
                 const moveSet = new Set(unit.card.moveDirections);
                 const attackSet = new Set(unit.card.attackDirections);
@@ -157,9 +156,10 @@ function handleCellClick(x, y) {
         return;
     }
 
-    // 移动模式
+    // 移动模式（默认激活）
     if (!moveMode) {
-        document.getElementById("message").innerText = "当前不是移动模式，请等待回合开始。";
+        // 理论上每一回合开始时 moveMode 会被重置为 true，但如果因某些原因失效，提示即可
+        document.getElementById("message").innerText = "当前不能移动，请等待回合开始。";
         return;
     }
     const unit = boardState.board[x][y];
@@ -199,18 +199,15 @@ function connect() {
         renderBoard();
         renderHand();
 
-        // 每回合开始时自动进入移动模式，清除选中和部署模式
+        // 每回合开始时自动进入移动模式
         moveMode = true;
         selectedFrom = null;
         deployMode = false;
         selectedCardIndex = null;
-        const moveBtn = document.getElementById("moveModeBtn");
-        if (moveBtn) moveBtn.classList.add("move-mode-active");
 
         if (boardState.gameOver) {
             document.getElementById("message").innerText = `游戏结束！${boardState.winner} 胜利！`;
             moveMode = false;
-            if (moveBtn) moveBtn.classList.remove("move-mode-active");
         } else {
             document.getElementById("turnIndicator").innerText = `当前回合: ${currentPlayer}`;
             document.getElementById("message").innerText = "";
@@ -220,26 +217,8 @@ function connect() {
 
 // ---------- 按钮事件绑定 ----------
 function bindEvents() {
-    const moveBtn = document.getElementById("moveModeBtn");
     const drawBtn = document.getElementById("drawBtn");
     const resetBtn = document.getElementById("resetBtn");
-
-    if (moveBtn) {
-        moveBtn.onclick = () => {
-            if (boardState.gameOver) return;
-            if (currentPlayer !== boardState.currentTurn) {
-                document.getElementById("message").innerText = "不是你的回合";
-                return;
-            }
-            // 手动激活移动模式（在误关闭时可用）
-            moveMode = true;
-            deployMode = false;
-            selectedCardIndex = null;
-            selectedFrom = null;
-            moveBtn.classList.add("move-mode-active");
-            document.getElementById("message").innerText = "已激活移动模式，点击己方单位再点击空格移动";
-        };
-    }
 
     if (drawBtn) {
         drawBtn.onclick = () => {
@@ -249,8 +228,7 @@ function bindEvents() {
                 return;
             }
             socket.send(JSON.stringify({ action: "draw", player: currentPlayer }));
-            moveMode = false;
-            if (moveBtn) moveBtn.classList.remove("move-mode-active");
+            moveMode = false;   // 抽卡后回合结束
             document.getElementById("message").innerText = "抽卡中...";
         };
     }
