@@ -10,9 +10,9 @@ Move then Hurt — 先移动后攻击
 
 技术栈
 
-· 前端：HTML + CSS + JavaScript (原生)
-· 后端：Java Spring Boot + WebSocket
-· 部署：Railway
+#· 前端：HTML + CSS + JavaScript (原生)
+#· 后端：Java Spring Boot + WebSocket
+#· 部署：Railway
 
 👉 在线试玩：https://move-then-hurt-production.up.railway.app/
 
