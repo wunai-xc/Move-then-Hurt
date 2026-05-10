@@ -14,7 +14,8 @@
 ##### · 后端：Java Spring Boot + WebSocket
 ##### · 部署：Railway
 
-# 👉 在线试玩：https://move-then-hurt-production.up.railway.app/
+# 👉 在线试玩：
+https://move-then-hurt-production.up.railway.app/
 
 # 游戏规则
 
