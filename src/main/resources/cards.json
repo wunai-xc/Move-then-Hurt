@@ -17,7 +17,7 @@
     "name": "骑士",
     "hp": 4,
     "damage": 3,
-    "move": ["N","S"],
+    "move": ["E","W"],
     "attack": ["N","S"]
   },
   {
