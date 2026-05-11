@@ -90,11 +90,13 @@ body {
     border-radius: 2px;
     font-size: 10px;
 }
+
 .card-hp-dmg {
     display: flex;
     justify-content: space-between;
     margin-top: 4px;
 }
+
 .card-hp { color: #2d6a2d; }
 .card-dmg { color: #b34e1a; }
 
@@ -107,12 +109,14 @@ body {
     bottom: 0;
     pointer-events: none;
 }
+
 .direction-marker {
     position: absolute;
     font-size: 10px;
     width: 16px;
     text-align: center;
 }
+
 .move-arrow { color: #1f5c1f; }
 .attack-x { color: #a4343e; }
 
@@ -132,6 +136,7 @@ body {
     animation: floatUp 1s ease-out forwards;
     z-index: 10;
 }
+
 @keyframes floatUp {
     0% { opacity: 1; transform: translateY(0); }
     100% { opacity: 0; transform: translateY(-20px); }
@@ -150,10 +155,12 @@ button {
     border-radius: 0;
     box-shadow: 0 2px 3px rgba(0,0,0,0.1);
 }
+
 button:active {
     transform: translateY(1px);
     background: #a08060;
 }
+
 button#drawBtn { background: #b8d0c0; }
 button#resetBtn { background: #e0b090; }
 button#exitBtn { background: #d0b8a0; }
@@ -172,6 +179,7 @@ button#exitBtn { background: #d0b8a0; }
     padding: 10px;
     border-top: 1px solid #ccc;
 }
+
 .hand-container {
     display: flex;
     gap: 8px;
@@ -179,6 +187,7 @@ button#exitBtn { background: #d0b8a0; }
     justify-content: center;
     min-height: 100px;
 }
+
 .hand-card {
     position: relative;
     width: 50px;
@@ -187,11 +196,13 @@ button#exitBtn { background: #d0b8a0; }
     border: 1px solid #aaa;
     padding: 2px;
 }
+
 .hand-card img {
     width: 42px;
     height: 112px;
     object-fit: cover;
 }
+
 .hand-card .card-info {
     position: absolute;
     top: 0;
@@ -199,4 +210,8 @@ button#exitBtn { background: #d0b8a0; }
     right: 0;
     bottom: 0;
     background: rgba(255,255,240,0.8);
+}
+/* 隐藏所有方向标记 */
+.move-arrow, .attack-x {
+    display: none;
 }
