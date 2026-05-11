@@ -1,3 +1,4 @@
+// ---------- 全局变量 ----------
 let socket;
 let currentPlayer = "RED";
 let boardState = null;
@@ -25,41 +26,24 @@ const dirPositions = {
 
 let previousState = null; // 用于检测受伤飘字
 
-function connect() {
-    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${location.host}/game`;
-    socket = new WebSocket(wsUrl);
-    socket.onopen = () => console.log("WebSocket connected");
-    socket.onerror = (err) => console.error(err);
-    socket.onmessage = (event) => {
-        const newState = JSON.parse(event.data);
-        if (previousState) checkDamageFloats(previousState, newState);
-        boardState = newState;
-        currentPlayer = boardState.currentTurn;
-        renderBoard();
-        renderHand();
-        document.getElementById("turnIndicator").innerText = `当前回合: ${currentPlayer === "RED" ? "红方" : "蓝方"}`;
-        if (boardState.gameOver) {
-            showModal(`游戏结束！${boardState.winner === "RED" ? "红方" : "蓝方"} 胜利！`);
-        }
-        previousState = JSON.parse(JSON.stringify(newState));
-    };
+// ---------- 浮窗提示（替代 alert）----------
+function showToast(msg) {
+    // 移除已存在的浮窗（避免叠加）
+    const oldToast = document.querySelector('.toast-notification');
+    if (oldToast) oldToast.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.innerText = msg;
+    document.body.appendChild(toast);
+
+    // 2秒后自动移除
+    setTimeout(() => {
+        if (toast.parentNode) toast.parentNode.removeChild(toast);
+    }, 2000);
 }
 
-// 检查血量变化，产生飘字
-function checkDamageFloats(oldState, newState) {
-    for (let i=0;i<5;i++) {
-        for (let j=0;j<5;j++) {
-            const oldUnit = oldState.board[i][j];
-            const newUnit = newState.board[i][j];
-            if (oldUnit && newUnit && oldUnit.card.id === newUnit.card.id && oldUnit.currentHp > newUnit.currentHp) {
-                const dmg = oldUnit.currentHp - newUnit.currentHp;
-                showFloatingNumber(i, j, `-${dmg}`);
-            }
-        }
-    }
-}
-
+// ---------- 受伤飘字 ----------
 function showFloatingNumber(row, col, text) {
     const cell = document.querySelector(`.board .cell[data-row='${row}'][data-col='${col}']`);
     if (!cell) return;
@@ -75,11 +59,25 @@ function showFloatingNumber(row, col, text) {
     setTimeout(() => div.remove(), 1000);
 }
 
+function checkDamageFloats(oldState, newState) {
+    for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 5; j++) {
+            const oldUnit = oldState.board[i][j];
+            const newUnit = newState.board[i][j];
+            if (oldUnit && newUnit && oldUnit.card.id === newUnit.card.id && oldUnit.currentHp > newUnit.currentHp) {
+                const dmg = oldUnit.currentHp - newUnit.currentHp;
+                showFloatingNumber(i, j, `-${dmg}`);
+            }
+        }
+    }
+}
+
+// ---------- 渲染棋盘 ----------
 function renderBoard() {
     const boardDiv = document.getElementById("board");
     boardDiv.innerHTML = "";
-    for (let i=0;i<5;i++) {
-        for (let j=0;j<5;j++) {
+    for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 5; j++) {
             const cell = document.createElement("div");
             cell.className = "cell";
             cell.setAttribute('data-row', i);
@@ -87,6 +85,7 @@ function renderBoard() {
             const unit = boardState.board[i][j];
             if (unit) {
                 cell.classList.add("has-unit");
+                // 卡牌图片
                 const img = document.createElement('img');
                 img.src = `Cards/${unit.card.imageFile}`;
                 img.className = 'card-img';
@@ -96,6 +95,7 @@ function renderBoard() {
                 img.style.filter = `brightness(${brightness})`;
                 cell.appendChild(img);
 
+                // 文字层
                 const infoDiv = document.createElement('div');
                 infoDiv.className = 'card-info';
                 infoDiv.innerHTML = `
@@ -107,7 +107,7 @@ function renderBoard() {
                 `;
                 cell.appendChild(infoDiv);
 
-                // 方向标记
+                // 方向标记（可保留攻击X，移动箭头已通过CSS隐藏）
                 const dirContainer = document.createElement('div');
                 dirContainer.className = 'direction-markers';
                 const moveSet = new Set(unit.card.moveDirections);
@@ -129,12 +129,13 @@ function renderBoard() {
             } else {
                 cell.innerText = "⬚";
             }
-            cell.onclick = () => handleCellClick(i,j);
+            cell.onclick = () => handleCellClick(i, j);
             boardDiv.appendChild(cell);
         }
     }
 }
 
+// ---------- 渲染手牌 ----------
 function renderHand() {
     const handDiv = document.getElementById("hand");
     if (!handDiv) return;
@@ -164,13 +165,14 @@ function renderHand() {
             if (boardState.currentTurn !== currentPlayer) return;
             deployMode = true;
             selectedCardIndex = idx;
-            showModal(`部署模式：点击己方两排内的空格部署“${card.name}”`);
+            showToast(`部署模式：点击己方两排内的空格部署“${card.name}”`);
         };
         handDiv.appendChild(cardDiv);
     });
 }
 
-function handleCellClick(x,y) {
+// ---------- 处理点击格子（移动 / 部署）----------
+function handleCellClick(x, y) {
     if (boardState.gameOver) return;
     // 部署模式
     if (deployMode && selectedCardIndex !== null) {
@@ -178,13 +180,13 @@ function handleCellClick(x,y) {
         if (unit === null) {
             // 检查是否在己方两排内
             if (currentPlayer === "RED" && (x !== 3 && x !== 4)) {
-                showModal("只能在己方两排（第3-4行）部署！");
+                showToast("只能在己方两排（第3-4行）部署！");
                 deployMode = false;
                 selectedCardIndex = null;
                 return;
             }
             if (currentPlayer === "BLUE" && (x !== 0 && x !== 1)) {
-                showModal("只能在己方两排（第0-1行）部署！");
+                showToast("只能在己方两排（第0-1行）部署！");
                 deployMode = false;
                 selectedCardIndex = null;
                 return;
@@ -197,7 +199,7 @@ function handleCellClick(x,y) {
                 col: y
             }));
         } else {
-            showModal("目标格子已有单位");
+            showToast("目标格子已有单位");
         }
         deployMode = false;
         selectedCardIndex = null;
@@ -208,10 +210,10 @@ function handleCellClick(x,y) {
     const unit = boardState.board[x][y];
     if (selectedFrom === null) {
         if (unit && unit.owner === currentPlayer) {
-            selectedFrom = [x,y];
-            showModal(`已选中 ${unit.card.name}，点击移动目标格子`);
+            selectedFrom = [x, y];
+            showToast(`已选中 ${unit.card.name}，点击移动目标格子`);
         } else {
-            showModal("请先点击己方单位");
+            showToast("请先点击己方单位");
         }
     } else {
         socket.send(JSON.stringify({
@@ -226,20 +228,59 @@ function handleCellClick(x,y) {
     }
 }
 
-function showModal(msg) {
-    // 简单实现，可以根据需要美化
-    alert(msg);
+// ---------- WebSocket 连接与消息处理 ----------
+function connect() {
+    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//${location.host}/game`;
+    socket = new WebSocket(wsUrl);
+    socket.onopen = () => console.log("WebSocket connected");
+    socket.onerror = (err) => {
+        console.error(err);
+        showToast("WebSocket 连接失败，请确保后端已启动");
+    };
+    socket.onmessage = (event) => {
+        const newState = JSON.parse(event.data);
+        if (previousState) checkDamageFloats(previousState, newState);
+        boardState = newState;
+        currentPlayer = boardState.currentTurn;
+        renderBoard();
+        renderHand();
+        document.getElementById("turnIndicator").innerText = `当前回合: ${currentPlayer === "RED" ? "红方" : "蓝方"}`;
+        if (boardState.gameOver) {
+            showToast(`游戏结束！${boardState.winner === "RED" ? "红方" : "蓝方"} 胜利！`);
+        }
+        previousState = JSON.parse(JSON.stringify(newState));
+    };
 }
 
-document.getElementById("drawBtn").onclick = () => {
-    if (boardState.gameOver) return;
-    if (boardState.currentTurn !== currentPlayer) {
-        showModal("不是你的回合");
-        return;
-    }
-    socket.send(JSON.stringify({ action: "draw", player: currentPlayer }));
-};
-document.getElementById("resetBtn").onclick = () => socket.send(JSON.stringify({ action: "reset" }));
-document.getElementById("exitBtn").onclick = () => window.location.href = "/";
+// ---------- 按钮事件绑定 ----------
+function bindEvents() {
+    const drawBtn = document.getElementById("drawBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const exitBtn = document.getElementById("exitBtn");
 
+    if (drawBtn) {
+        drawBtn.onclick = () => {
+            if (boardState.gameOver) return;
+            if (boardState.currentTurn !== currentPlayer) {
+                showToast("不是你的回合");
+                return;
+            }
+            socket.send(JSON.stringify({ action: "draw", player: currentPlayer }));
+        };
+    }
+    if (resetBtn) {
+        resetBtn.onclick = () => {
+            socket.send(JSON.stringify({ action: "reset" }));
+        };
+    }
+    if (exitBtn) {
+        exitBtn.onclick = () => {
+            window.location.href = "/";
+        };
+    }
+}
+
+// ---------- 启动 ----------
 connect();
+bindEvents();
