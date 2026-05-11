@@ -31,6 +31,7 @@ body {
     letter-spacing: 2px;
 }
 
+/*棋盘背景*/
 .board {
     display: grid;
     grid-template-columns: repeat(5, 50px);
@@ -41,10 +42,12 @@ body {
     margin-bottom: 20px;
 }
 
+/*格子*/
 .cell {
     background: #FFFFF0;
     position: relative;
-    padding: 4px;           /* 卡牌比格子小4px */
+    padding: 4px;           
+    /* 卡牌比格子小4px */
     border: 1px solid #ddd;
     cursor: pointer;
 }
@@ -59,8 +62,8 @@ body {
 
 /* 卡牌图片 */
 .card-img {
-    width: 42px;
-    height: 112px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     display: block;
     margin: 0 auto;
