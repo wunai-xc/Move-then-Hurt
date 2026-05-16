@@ -3,6 +3,7 @@
     user-select: none;
 }
 
+/*主体*/
 body {
     background: #FAF0E6;   /* 主色调 */
     font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
@@ -14,12 +15,14 @@ body {
     padding: 20px;
 }
 
+/**/
 .game-container {
     background: #F5F5F5;
     padding: 20px 30px 30px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
+/**/
 .turn-indicator {
     text-align: center;
     font-size: 1.5rem;
@@ -62,10 +65,10 @@ body {
 
 /* 卡牌图片 */
 .card-img {
-    width: 100%;
+    width: auto;
     height: 100%;
-    object-fit: cover;
-    display: block;
+    max-width: 100%;
+    object-fit: contain;   /* 保持比例，完整显示图片，可能留白 */
     margin: 0 auto;
 }
 
@@ -87,6 +90,7 @@ body {
     pointer-events: none;
 }
 
+/*卡牌名称显示*/
 .card-name {
     text-align: center;
     background: rgba(0,0,0,0.3);
@@ -94,12 +98,14 @@ body {
     font-size: 10px;
 }
 
+/*卡牌血量*/
 .card-hp-dmg {
     display: flex;
     justify-content: space-between;
     margin-top: 4px;
 }
 
+/*血量攻击文字颜色*/
 .card-hp { color: #2d6a2d; }
 .card-dmg { color: #b34e1a; }
 
@@ -113,6 +119,7 @@ body {
     pointer-events: none;
 }
 
+/**/
 .direction-marker {
     position: absolute;
     font-size: 10px;
@@ -120,6 +127,7 @@ body {
     text-align: center;
 }
 
+/*剪头攻击方向颜色*/
 .move-arrow { color: #1f5c1f; }
 .attack-x { color: #a4343e; }
 
@@ -159,14 +167,17 @@ button {
     box-shadow: 0 2px 3px rgba(0,0,0,0.1);
 }
 
+
 button:active {
     transform: translateY(1px);
     background: #a08060;
 }
 
+
 button#drawBtn { background: #b8d0c0; }
 button#resetBtn { background: #e0b090; }
 button#exitBtn { background: #d0b8a0; }
+
 
 .message {
     text-align: center;
@@ -176,12 +187,14 @@ button#exitBtn { background: #d0b8a0; }
     background: #e0d0c0;
 }
 
+
 .hand-area {
     margin-top: 20px;
     background: #F5F5F5;
     padding: 10px;
     border-top: 1px solid #ccc;
 }
+
 
 .hand-container {
     display: flex;
@@ -191,6 +204,7 @@ button#exitBtn { background: #d0b8a0; }
     min-height: 100px;
 }
 
+/*手牌*/
 .hand-card {
     position: relative;
     width: 50px;
@@ -200,10 +214,12 @@ button#exitBtn { background: #d0b8a0; }
     padding: 2px;
 }
 
+/*手牌图片*/
 .hand-card img {
-    width: 42px;
-    height: 112px;
-    object-fit: cover;
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+    object-fit: contain;
 }
 
 .hand-card .card-info {
@@ -240,4 +256,10 @@ button#exitBtn { background: #d0b8a0; }
     15% { opacity: 1; top: 20px; }
     85% { opacity: 1; top: 20px; }
     100% { opacity: 0; top: 10px; display: none; }
+}.card-img {
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+    object-fit: contain;   /* 保持比例，完整显示图片，可能留白 */
+    margin: 0 auto;
 }
