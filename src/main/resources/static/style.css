@@ -70,6 +70,7 @@ body {
     max-width: 100%;
     object-fit: contain;   /* 保持比例，完整显示图片，可能留白 */
     margin: 0 auto;
+    
 }
 
 /* 卡牌文字层（绝对定位在图片上方） */
