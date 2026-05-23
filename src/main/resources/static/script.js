@@ -83,6 +83,7 @@ function checkDamageFloats(oldState, newState) {
 function calculateMoveAttackPositions(unit, row, col) {
     const movePositions = [];
     const attackPositions = [];
+    const allAttackPositions = []; // 所有攻击方位（包括空位）
     
     for (const dir of unit.card.moveDirections) {
         const [dx, dy] = dirOffset[dir];
@@ -99,19 +100,20 @@ function calculateMoveAttackPositions(unit, row, col) {
         const nc = col + dy;
         if (nr >= 0 && nr < 5 && nc >= 0 && nc < 5) {
             const target = boardState.board[nr][nc];
+            allAttackPositions.push([nr, nc]); // 所有攻击方位都加入
             if (target && target.owner !== unit.owner) {
-                attackPositions.push([nr, nc]);
+                attackPositions.push([nr, nc]); // 有敌方单位的位置单独记录
             }
         }
     }
     
-    return { movePositions, attackPositions };
+    return { movePositions, attackPositions, allAttackPositions };
 }
 
 function clearHighlights() {
     const cells = document.querySelectorAll('.board .cell');
     cells.forEach(cell => {
-        cell.classList.remove('move-target', 'attack-target');
+        cell.classList.remove('move-target', 'attack-target', 'attack-range');
     });
     const cards = document.querySelectorAll('.board .card');
     cards.forEach(card => {
@@ -223,14 +225,21 @@ function renderBoard() {
             }
             const unit = boardState.board[selectedFrom[0]][selectedFrom[1]];
             if (unit) {
-                const { movePositions, attackPositions } = calculateMoveAttackPositions(unit, selectedFrom[0], selectedFrom[1]);
+                const { movePositions, attackPositions, allAttackPositions } = calculateMoveAttackPositions(unit, selectedFrom[0], selectedFrom[1]);
                 movePositions.forEach(([r, c]) => {
                     const cell = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
                     if (cell) cell.classList.add('move-target');
                 });
-                attackPositions.forEach(([r, c]) => {
+                allAttackPositions.forEach(([r, c]) => {
                     const cell = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
-                    if (cell) cell.classList.add('attack-target');
+                    if (cell) {
+                        const hasEnemy = attackPositions.some(([ar, ac]) => ar === r && ac === c);
+                        if (hasEnemy) {
+                            cell.classList.add('attack-target');
+                        } else {
+                            cell.classList.add('attack-range');
+                        }
+                    }
                 });
             }
         }
