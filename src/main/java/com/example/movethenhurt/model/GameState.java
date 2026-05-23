@@ -56,13 +56,26 @@ public class GameState {
         if (x >= 0 && x < 5 && y >= 0 && y < 5) board[x][y] = unit;
     }
 
-    // 抽卡：从牌堆顶部抽一张到手牌，手牌满则返回 false
+    // 抽卡：从牌堆顶部抽一张到手牌，手牌满则返回 false，国王牌跳过
     public boolean drawCardToHand(Player player) {
         List<Card> hand = hands.get(player);
         if (hand.size() >= 5) return false;
         Queue<Card> deck = decks.get(player);
         if (deck.isEmpty()) return false;
-        Card card = deck.poll();
+        
+        // 跳过所有国王牌，直到找到非国王牌或牌堆空
+        Card card = null;
+        while (!deck.isEmpty()) {
+            Card temp = deck.poll();
+            if (!temp.isKing()) {
+                card = temp;
+                break;
+            }
+            // 国王牌放回牌堆底部，不抽
+            deck.offer(temp);
+        }
+        
+        if (card == null) return false;
         hand.add(card);
         return true;
     }
@@ -81,8 +94,9 @@ public class GameState {
         return true;
     }
 
-    // 死亡处理：从棋盘移除单位，重置血量，放回对应玩家的牌堆底部
+    // 死亡处理：从棋盘移除单位，重置血量，放回对应玩家的牌堆底部，国王牌不回牌堆
     public void returnToDeck(Unit unit) {
+        if (unit.isKing()) return; // 国王牌不回牌堆
         Player owner = unit.getOwner();
         Card originalCard = unit.getCard();
         // 创建新卡牌实例（保留原始属性，血量重置）

@@ -19,10 +19,11 @@ public class GameService {
 
     public void resetGame() {
         state = new GameState();
-        // 初始化牌堆（根据模板数量生成多份）
+        // 初始化牌堆（根据模板数量生成多份，国王牌不加入牌堆）
         for (Player p : Player.values()) {
             Queue<Card> deck = state.getDeck(p);
             for (Card template : cardLoader.getCardTemplates()) {
+                if (template.isKing()) continue; // 跳过国王牌，不加入牌堆
                 for (int i = 0; i < template.getCountInDeck(); i++) {
                     Card copy = new Card(template.getId(), template.getName(), template.getHp(),
                             template.getDamage(), template.getMoveDirections(), template.getAttackDirections(),
