@@ -1,4 +1,5 @@
 let socket;
+let assignedPlayer = null;
 let currentPlayer = "RED";
 let boardState = null;
 let selectedFrom = null;
@@ -277,7 +278,7 @@ function createHandCard(card, player, index) {
     const cardDiv = document.createElement('div');
     cardDiv.className = 'hand-card';
     
-    if (player === currentPlayer) {
+    if (player === assignedPlayer) {
         cardDiv.classList.add('your-card');
     } else {
         cardDiv.classList.add('disabled');
@@ -317,7 +318,7 @@ function createHandCard(card, player, index) {
     }
     cardDiv.appendChild(dirContainer);
     
-    if (player === currentPlayer && !boardState.gameOver && boardState.currentTurn === currentPlayer) {
+    if (assignedPlayer && player === assignedPlayer && !boardState.gameOver && boardState.currentTurn === assignedPlayer) {
         cardDiv.onclick = (e) => {
             e.stopPropagation();
             deployMode = true;
@@ -374,20 +375,44 @@ function updateTurnIndicator() {
     }
 }
 
+function updatePlayerBadge() {
+    const playerBadge = document.getElementById("playerBadge");
+    if (!playerBadge) return;
+    
+    if (assignedPlayer === "RED") {
+        playerBadge.innerText = "🔴 红方";
+        playerBadge.className = "player-badge badge-red";
+    } else if (assignedPlayer === "BLUE") {
+        playerBadge.innerText = "🔵 蓝方";
+        playerBadge.className = "player-badge badge-blue";
+    } else {
+        playerBadge.innerText = "等待分配...";
+        playerBadge.className = "player-badge";
+    }
+}
+
 function handleCellClick(x, y) {
+    if (!assignedPlayer) {
+        showToast("等待分配玩家身份...");
+        return;
+    }
     if (boardState.gameOver) return;
+    if (boardState.currentTurn !== assignedPlayer) {
+        showToast("不是你的回合");
+        return;
+    }
     
     if (deployMode && selectedCardIndex !== null) {
         const unit = boardState.board[x][y];
         if (unit === null) {
-            if (currentPlayer === "RED" && (x !== 3 && x !== 4)) {
+            if (assignedPlayer === "RED" && (x !== 3 && x !== 4)) {
                 showToast("只能在己方两排（第3-4行）部署！");
                 deployMode = false;
                 selectedCardIndex = null;
                 renderHand();
                 return;
             }
-            if (currentPlayer === "BLUE" && (x !== 0 && x !== 1)) {
+            if (assignedPlayer === "BLUE" && (x !== 0 && x !== 1)) {
                 showToast("只能在己方两排（第0-1行）部署！");
                 deployMode = false;
                 selectedCardIndex = null;
@@ -396,7 +421,7 @@ function handleCellClick(x, y) {
             }
             socket.send(JSON.stringify({
                 action: "deploy",
-                player: currentPlayer,
+                player: assignedPlayer,
                 cardIndex: selectedCardIndex,
                 row: x,
                 col: y
@@ -419,7 +444,7 @@ function handleCellClick(x, y) {
                 if (isMoveTarget) {
                     socket.send(JSON.stringify({
                         action: "move",
-                        player: currentPlayer,
+                        player: assignedPlayer,
                         fromX: selectedFrom[0],
                         fromY: selectedFrom[1],
                         toX: x,
@@ -435,12 +460,12 @@ function handleCellClick(x, y) {
         clearHighlights();
         selectedFrom = null;
         
-        if (unit && unit.owner === currentPlayer) {
+        if (unit && unit.owner === assignedPlayer) {
             selectedFrom = [x, y];
             renderBoard();
             renderHand();
             showToast(`已选中 ${unit.card.name}，点击绿色边框格子移动`);
-        } else {
+        } else if (unit) {
             showToast("请先点击己方单位");
         }
     }
@@ -458,17 +483,25 @@ function connect() {
     };
     
     socket.onmessage = (event) => {
-        const newState = JSON.parse(event.data);
-        if (previousState) checkDamageFloats(previousState, newState);
-        boardState = newState;
-        currentPlayer = boardState.currentTurn;
-        renderBoard();
-        renderHand();
-        updateTurnIndicator();
-        if (boardState.gameOver) {
-            showToast(`游戏结束！${boardState.winner === "RED" ? "红方" : "蓝方"} 胜利！`);
+        const data = JSON.parse(event.data);
+        
+        if (data.type === "playerAssigned") {
+            assignedPlayer = data.player;
+            updatePlayerBadge();
+            showToast(`你已分配为：${assignedPlayer === "RED" ? "🔴 红方" : "🔵 蓝方"}`);
+        } else {
+            const newState = data;
+            if (previousState) checkDamageFloats(previousState, newState);
+            boardState = newState;
+            currentPlayer = boardState.currentTurn;
+            renderBoard();
+            renderHand();
+            updateTurnIndicator();
+            if (boardState.gameOver) {
+                showToast(`游戏结束！${boardState.winner === "RED" ? "红方" : "蓝方"} 胜利！`);
+            }
+            previousState = JSON.parse(JSON.stringify(newState));
         }
-        previousState = JSON.parse(JSON.stringify(newState));
     };
 }
 
@@ -479,8 +512,12 @@ function bindEvents() {
 
     if (drawBtn) {
         drawBtn.onclick = () => {
+            if (!assignedPlayer) {
+                showToast("等待分配玩家身份...");
+                return;
+            }
             if (boardState.gameOver) return;
-            if (boardState.currentTurn !== currentPlayer) {
+            if (boardState.currentTurn !== assignedPlayer) {
                 showToast("不是你的回合");
                 return;
             }
@@ -488,7 +525,7 @@ function bindEvents() {
             selectedFrom = null;
             deployMode = false;
             selectedCardIndex = null;
-            socket.send(JSON.stringify({ action: "draw", player: currentPlayer }));
+            socket.send(JSON.stringify({ action: "draw", player: assignedPlayer }));
         };
     }
     

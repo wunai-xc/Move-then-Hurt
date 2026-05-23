@@ -16,6 +16,8 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
     private final GameService gameService;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+    private final Map<String, Player> sessionPlayers = new ConcurrentHashMap<>();
+    private Player nextPlayer = Player.RED;
 
     public GameWebSocketHandler(GameService gameService) {
         this.gameService = gameService;
@@ -24,7 +26,24 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.put(session.getId(), session);
+        assignPlayer(session);
         sendState(session);
+    }
+
+    private void assignPlayer(WebSocketSession session) {
+        synchronized (this) {
+            Player assignedPlayer = nextPlayer;
+            sessionPlayers.put(session.getId(), assignedPlayer);
+            nextPlayer = nextPlayer == Player.RED ? Player.BLUE : Player.RED;
+            try {
+                Map<String, Object> initMsg = new ConcurrentHashMap<>();
+                initMsg.put("type", "playerAssigned");
+                initMsg.put("player", assignedPlayer.name());
+                session.sendMessage(new TextMessage(objectMapper.writeValueAsString(initMsg)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -69,11 +88,13 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         sessions.remove(session.getId());
+        sessionPlayers.remove(session.getId());
     }
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
         sessions.remove(session.getId());
+        sessionPlayers.remove(session.getId());
         exception.printStackTrace();
     }
 
