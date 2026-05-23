@@ -24,11 +24,16 @@ const dirPositions = {
     'NW': { top: '0%', left: '0%', transform: 'translate(-50%, -50%)' }
 };
 
+// 方向偏移量（用于计算可移动/攻击位置）
+const dirOffset = {
+    'N':  [-1, 0], 'NE': [-1, 1], 'E':  [0, 1], 'SE': [1, 1],
+    'S':  [1, 0], 'SW': [1, -1], 'W':  [0, -1], 'NW': [-1, -1]
+};
+
 let previousState = null; // 用于检测受伤飘字
 
 // ---------- 浮窗提示（替代 alert）----------
 function showToast(msg) {
-    // 移除已存在的浮窗（避免叠加）
     const oldToast = document.querySelector('.toast-notification');
     if (oldToast) oldToast.remove();
 
@@ -37,7 +42,6 @@ function showToast(msg) {
     toast.innerText = msg;
     document.body.appendChild(toast);
 
-    // 2秒后自动移除
     setTimeout(() => {
         if (toast.parentNode) toast.parentNode.removeChild(toast);
     }, 2000);
@@ -62,14 +66,59 @@ function showFloatingNumber(row, col, text) {
 function checkDamageFloats(oldState, newState) {
     for (let i = 0; i < 5; i++) {
         for (let j = 0; j < 5; j++) {
-            const oldUnit = oldState.board[i][j];
-            const newUnit = newState.board[i][j];
+            const oldUnit = oldState?.board?.[i]?.[j];
+            const newUnit = newState?.board?.[i]?.[j];
             if (oldUnit && newUnit && oldUnit.card.id === newUnit.card.id && oldUnit.currentHp > newUnit.currentHp) {
                 const dmg = oldUnit.currentHp - newUnit.currentHp;
                 showFloatingNumber(i, j, `-${dmg}`);
+                // 添加上抖动动画
+                const cell = document.querySelector(`.board .cell[data-row='${i}'][data-col='${j}']`);
+                if (cell) {
+                    cell.classList.add('shake');
+                    setTimeout(() => cell.classList.remove('shake'), 400);
+                }
             }
         }
     }
+}
+
+// ---------- 计算可移动和可攻击位置 ----------
+function calculateMoveAttackPositions(unit, row, col) {
+    const movePositions = [];
+    const attackPositions = [];
+    
+    // 计算可移动位置
+    for (const dir of unit.card.moveDirections) {
+        const [dx, dy] = dirOffset[dir];
+        const nr = row + dx;
+        const nc = col + dy;
+        if (nr >= 0 && nr < 5 && nc >= 0 && nc < 5 && !boardState.board[nr][nc]) {
+            movePositions.push([nr, nc]);
+        }
+    }
+    
+    // 计算可攻击位置（从选中位置攻击
+    for (const dir of unit.card.attackDirections) {
+        const [dx, dy] = dirOffset[dir];
+        const nr = row + dx;
+        const nc = col + dy;
+        if (nr >= 0 && nr < 5 && nc >= 0 && nc < 5) {
+            const target = boardState.board[nr][nc];
+            if (target && target.owner !== unit.owner) {
+                attackPositions.push([nr, nc]);
+            }
+        }
+    }
+    
+    return { movePositions, attackPositions };
+}
+
+// ---------- 清除高亮 ----------
+function clearHighlights() {
+    const cells = document.querySelectorAll('.board .cell');
+    cells.forEach(cell => {
+        cell.classList.remove('selected', 'move-target', 'attack-target');
+    });
 }
 
 // ---------- 渲染棋盘 ----------
@@ -82,7 +131,9 @@ function renderBoard() {
             cell.className = "cell";
             cell.setAttribute('data-row', i);
             cell.setAttribute('data-col', j);
+            
             const unit = boardState.board[i][j];
+            
             if (unit) {
                 cell.classList.add("has-unit");
                 // 卡牌图片
@@ -91,7 +142,7 @@ function renderBoard() {
                 img.className = 'card-img';
                 // 根据血量百分比调整亮度（血量越低越暗）
                 const hpPercent = unit.currentHp / unit.card.hp;
-                const brightness = 0.5 + hpPercent * 0.5;
+                const brightness = 0.4 + hpPercent * 0.6;
                 img.style.filter = `brightness(${brightness})`;
                 cell.appendChild(img);
 
@@ -107,7 +158,7 @@ function renderBoard() {
                 `;
                 cell.appendChild(infoDiv);
 
-                // 方向标记（可保留攻击X，移动箭头已通过CSS隐藏）
+                // 方向标记
                 const dirContainer = document.createElement('div');
                 dirContainer.className = 'direction-markers';
                 const moveSet = new Set(unit.card.moveDirections);
@@ -126,11 +177,29 @@ function renderBoard() {
                     dirContainer.appendChild(marker);
                 }
                 cell.appendChild(dirContainer);
-            } else {
-                cell.innerText = "⬚";
             }
             cell.onclick = () => handleCellClick(i, j);
             boardDiv.appendChild(cell);
+        }
+    }
+    
+    // 重新应用高亮
+    if (selectedFrom) {
+        const selectedCell = document.querySelector(`.cell[data-row='${selectedFrom[0]}'][data-col='${selectedFrom[1]}']`);
+        if (selectedCell) {
+            selectedCell.classList.add('selected');
+            const unit = boardState.board[selectedFrom[0]][selectedFrom[1]];
+            if (unit) {
+                const { movePositions, attackPositions } = calculateMoveAttackPositions(unit, selectedFrom[0], selectedFrom[1]);
+                movePositions.forEach(([r, c]) => {
+                    const cell = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
+                    if (cell) cell.classList.add('move-target');
+                });
+                attackPositions.forEach(([r, c]) => {
+                    const cell = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
+                    if (cell) cell.classList.add('attack-target');
+                });
+            }
         }
     }
 }
@@ -148,16 +217,44 @@ function renderHand() {
     hand.forEach((card, idx) => {
         const cardDiv = document.createElement('div');
         cardDiv.className = 'hand-card';
-        cardDiv.innerHTML = `
-            <img src="Cards/${card.imageFile}" style="width:42px;height:112px;object-fit:cover;">
-            <div class="card-info" style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(255,255,240,0.8);">
-                <div class="card-name">${card.name}</div>
-                <div class="card-hp-dmg">
-                    <span class="card-hp">❤️${card.hp}</span>
-                    <span class="card-dmg">⚔️${card.damage}</span>
-                </div>
+        
+        // 图片
+        const img = document.createElement('img');
+        img.src = `Cards/${card.imageFile}`;
+        cardDiv.appendChild(img);
+        
+        // 信息层
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'card-info';
+        infoDiv.innerHTML = `
+            <div class="card-name">${card.name}</div>
+            <div class="card-hp-dmg">
+                <span class="card-hp">❤️${card.hp}</span>
+                <span class="card-dmg">⚔️${card.damage}</span>
             </div>
         `;
+        cardDiv.appendChild(infoDiv);
+        
+        // 方向标记
+        const dirContainer = document.createElement('div');
+        dirContainer.className = 'direction-markers';
+        const moveSet = new Set(card.moveDirections);
+        const attackSet = new Set(card.attackDirections);
+        for (const [dir, pos] of Object.entries(dirPositions)) {
+            const hasMove = moveSet.has(dir);
+            const hasAttack = attackSet.has(dir);
+            if (!hasMove && !hasAttack) continue;
+            const marker = document.createElement('div');
+            marker.className = 'direction-marker';
+            marker.style.top = pos.top;
+            marker.style.left = pos.left;
+            marker.style.transform = pos.transform;
+            if (hasMove) marker.innerHTML += `<span class="move-arrow">${arrowIcon[dir]}</span>`;
+            if (hasAttack) marker.innerHTML += `<span class="attack-x">X</span>`;
+            dirContainer.appendChild(marker);
+        }
+        cardDiv.appendChild(dirContainer);
+        
         cardDiv.style.position = 'relative';
         cardDiv.onclick = (e) => {
             e.stopPropagation();
@@ -165,6 +262,7 @@ function renderHand() {
             if (boardState.currentTurn !== currentPlayer) return;
             deployMode = true;
             selectedCardIndex = idx;
+            clearHighlights();
             showToast(`部署模式：点击己方两排内的空格部署“${card.name}”`);
         };
         handDiv.appendChild(cardDiv);
@@ -174,11 +272,11 @@ function renderHand() {
 // ---------- 处理点击格子（移动 / 部署）----------
 function handleCellClick(x, y) {
     if (boardState.gameOver) return;
+    
     // 部署模式
     if (deployMode && selectedCardIndex !== null) {
         const unit = boardState.board[x][y];
         if (unit === null) {
-            // 检查是否在己方两排内
             if (currentPlayer === "RED" && (x !== 3 && x !== 4)) {
                 showToast("只能在己方两排（第3-4行）部署！");
                 deployMode = false;
@@ -204,27 +302,43 @@ function handleCellClick(x, y) {
         deployMode = false;
         selectedCardIndex = null;
         return;
-    }
-
-    // 移动模式
-    const unit = boardState.board[x][y];
-    if (selectedFrom === null) {
+    } else {
+        // 移动模式
+        const unit = boardState.board[x][y];
+        
+        // 检查是否点击的是可移动目标
+        if (selectedFrom) {
+            const selectedUnit = boardState.board[selectedFrom[0]][selectedFrom[1]];
+            if (selectedUnit) {
+                const { movePositions } = calculateMoveAttackPositions(selectedUnit, selectedFrom[0], selectedFrom[1]);
+                const isMoveTarget = movePositions.some(([r, c]) => r === x && c === y);
+                if (isMoveTarget) {
+                    socket.send(JSON.stringify({
+                        action: "move",
+                        player: currentPlayer,
+                        fromX: selectedFrom[0],
+                        fromY: selectedFrom[1],
+                        toX: x,
+                        toY: y
+                    }));
+                    selectedFrom = null;
+                    clearHighlights();
+                    return;
+                }
+            }
+        }
+        
+        // 不是移动目标，重置选择
+        clearHighlights();
+        selectedFrom = null;
+        
         if (unit && unit.owner === currentPlayer) {
             selectedFrom = [x, y];
-            showToast(`已选中 ${unit.card.name}，点击移动目标格子`);
+            renderBoard(); // 重新渲染以显示高亮
+            showToast(`已选中 ${unit.card.name}，点击绿色边框格子移动`);
         } else {
             showToast("请先点击己方单位");
         }
-    } else {
-        socket.send(JSON.stringify({
-            action: "move",
-            player: currentPlayer,
-            fromX: selectedFrom[0],
-            fromY: selectedFrom[1],
-            toX: x,
-            toY: y
-        }));
-        selectedFrom = null;
     }
 }
 
@@ -266,11 +380,15 @@ function bindEvents() {
                 showToast("不是你的回合");
                 return;
             }
+            clearHighlights();
+            selectedFrom = null;
             socket.send(JSON.stringify({ action: "draw", player: currentPlayer }));
         };
     }
     if (resetBtn) {
         resetBtn.onclick = () => {
+            clearHighlights();
+            selectedFrom = null;
             socket.send(JSON.stringify({ action: "reset" }));
         };
     }

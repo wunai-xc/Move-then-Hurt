@@ -37,8 +37,8 @@ body {
 /*棋盘背景*/
 .board {
     display: grid;
-    grid-template-columns: repeat(5, 50px);
-    grid-template-rows: repeat(5, 120px);
+    grid-template-columns: repeat(5, 98px);
+    grid-template-rows: repeat(5, 128px);
     gap: 0;
     background: #fff;
     border: 1px solid #ccc;
@@ -53,6 +53,29 @@ body {
     /* 卡牌比格子小4px */
     border: 1px solid #ddd;
     cursor: pointer;
+    width: 98px;
+    height: 128px;
+    transition: all 0.2s ease;
+}
+
+/* 可移动格子 - 绿色边框 */
+.cell.move-target {
+    border: 3px solid #4CAF50 !important;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+}
+
+/* 可攻击格子 - 红色X */
+.cell.attack-target::after {
+    content: "×";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 60px;
+    font-weight: bold;
+    color: #F44336;
+    text-shadow: 0 0 4px rgba(244, 67, 54, 0.8);
+    pointer-events: none;
 }
 
 /* 有单位的格子，显示卡牌内容 */
@@ -63,14 +86,31 @@ body {
     justify-content: center;
 }
 
+/* 选中的卡牌 - 放大/抬起效果 */
+.cell.selected {
+    transform: scale(1.1) translateY(-8px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
 /* 卡牌图片 */
 .card-img {
-    width: auto;
-    height: 100%;
-    max-width: 100%;
+    width: 90px;
+    height: 120px;
     object-fit: contain;   /* 保持比例，完整显示图片，可能留白 */
     margin: 0 auto;
-    
+}
+
+/* 受伤抖动动画 */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-5px); }
+    80% { transform: translateX(5px); }
+}
+.shake {
+    animation: shake 0.4s ease-in-out;
 }
 
 /* 卡牌文字层（绝对定位在图片上方） */
@@ -208,18 +248,21 @@ button#exitBtn { background: #d0b8a0; }
 /*手牌*/
 .hand-card {
     position: relative;
-    width: 50px;
+    width: 70px;
+    height: 100px;
     cursor: pointer;
     background: #FFFFF0;
     border: 1px solid #aaa;
     padding: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /*手牌图片*/
 .hand-card img {
-    width: auto;
-    height: 100%;
-    max-width: 100%;
+    width: 50px;
+    height: 60px;
     object-fit: contain;
 }
 
@@ -229,7 +272,30 @@ button#exitBtn { background: #d0b8a0; }
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255,255,240,0.8);
+    background: rgba(255,255,240,0.85);
+    font-size: 10px;
+    padding: 2px;
+}
+
+/* 手牌的方向标记 */
+.hand-card .direction-markers {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    font-size: 8px;
+}
+
+.hand-card .direction-marker {
+    position: absolute;
+    width: 12px;
+    text-align: center;
+}
+
+.hand-card .move-arrow, .hand-card .attack-x {
+    display: inline !important;
 }
 /* 隐藏所有方向标记 */
 .move-arrow, .attack-x {
