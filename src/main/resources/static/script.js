@@ -169,7 +169,7 @@ function renderBoard() {
                     <div class="card-name">${unit.card.name}</div>
                     <div class="card-hp-dmg">
                         <span class="card-hp">❤️${unit.currentHp}</span>
-                        <span class="card-dmg">⚔️${card.damage}</span>
+                        <span class="card-dmg">⚔️${unit.card.damage}</span>
                     </div>
                 `;
                 cardDiv.appendChild(infoDiv);
