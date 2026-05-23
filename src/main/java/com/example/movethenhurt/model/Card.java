@@ -12,9 +12,10 @@ public class Card {
     private int countInDeck;   // 牌堆中的初始数量
     private boolean isKing;
     private String imageFile;   // 例如 "0_国王.jpg"
+    private String icon;   // 简易图标
 
     public Card(int id, String name, int hp, int damage, Set<String> moveDirections,
-                Set<String> attackDirections, int countInDeck, boolean isKing, String imageFile) {
+                Set<String> attackDirections, int countInDeck, boolean isKing, String imageFile, String icon) {
         this.id = id;
         this.name = name;
         this.hp = hp;
@@ -24,6 +25,7 @@ public class Card {
         this.countInDeck = countInDeck;
         this.isKing = isKing;
         this.imageFile = imageFile;
+        this.icon = icon;
     }
 
     // Getters and Setters
@@ -45,4 +47,6 @@ public class Card {
     public void setKing(boolean king) { isKing = king; }
     public String getImageFile() { return imageFile; }
     public void setImageFile(String imageFile) { this.imageFile = imageFile; }
+    public String getIcon() { return icon; }
+    public void setIcon(String icon) { this.icon = icon; }
 }

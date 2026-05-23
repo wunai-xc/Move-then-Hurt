@@ -31,7 +31,8 @@ public class CardLoader {
             int count = (int) raw.get("countInDeck");
             boolean isKing = (boolean) raw.get("isKing");
             String image = (String) raw.get("image");
-            Card card = new Card(id, name, hp, damage, move, attack, count, isKing, image);
+            String icon = (String) raw.get("icon");
+            Card card = new Card(id, name, hp, damage, move, attack, count, isKing, image, icon);
             cardTemplates.add(card);
         }
     }

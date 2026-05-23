@@ -166,12 +166,11 @@ function renderBoard() {
                 const bgDarkness = Math.floor((1 - hpPercent) * 60); // 0-60的暗度
                 cardDiv.style.backgroundColor = `rgb(${255 - bgDarkness}, ${255 - bgDarkness}, ${240 - bgDarkness})`;
                 
-                const img = document.createElement('img');
-                img.src = `Cards/${unit.card.imageFile}`;
-                img.className = 'card-img';
-                const brightness = 0.4 + hpPercent * 0.6;
-                img.style.filter = `brightness(${brightness})`;
-                cardDiv.appendChild(img);
+                // 简易图标代替图片
+                const iconDiv = document.createElement('div');
+                iconDiv.className = 'card-icon';
+                iconDiv.textContent = unit.card.icon || '🃏';
+                cardDiv.appendChild(iconDiv);
 
                 const infoDiv = document.createElement('div');
                 infoDiv.className = 'card-info';
@@ -284,9 +283,11 @@ function createHandCard(card, player, index) {
         cardDiv.classList.add('disabled');
     }
     
-    const img = document.createElement('img');
-    img.src = `Cards/${card.imageFile}`;
-    cardDiv.appendChild(img);
+    // 简易图标代替图片
+    const iconDiv = document.createElement('div');
+    iconDiv.className = 'card-icon';
+    iconDiv.textContent = card.icon || '🃏';
+    cardDiv.appendChild(iconDiv);
     
     const infoDiv = document.createElement('div');
     infoDiv.className = 'card-info';

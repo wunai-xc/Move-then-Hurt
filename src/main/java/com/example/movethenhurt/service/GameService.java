@@ -28,7 +28,7 @@ public class GameService {
                 for (int i = 0; i < template.getCountInDeck(); i++) {
                     Card copy = new Card(template.getId(), template.getName(), template.getHp(),
                             template.getDamage(), template.getMoveDirections(), template.getAttackDirections(),
-                            1, template.isKing(), template.getImageFile());
+                            1, template.isKing(), template.getImageFile(), template.getIcon());
                     allCards.add(copy);
                 }
             }
