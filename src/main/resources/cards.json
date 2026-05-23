@@ -8,8 +8,8 @@
     "attack": [],
     "countInDeck": 2,
     "isKing": true,
-    "icon": "👑",
-    "color": "#FFD700"
+    "image": "1_king.jpg",
+    "icon": "👑"
   },
   {
     "id": 2,
@@ -20,11 +20,11 @@
     "attack": ["NE","SW","NE","SW"],
     "countInDeck": 6,
     "isKing": false,
-    "icon": "🛡️",
-    "color": "#4169E1"
+    "image": "2_knight.jpg",
+    "icon": "🛡️"
   },
   {
-    "id":3,
+    "id": 3,
     "name": "弓手",
     "hp": 6,
     "damage": 7,
@@ -32,11 +32,11 @@
     "attack": ["N","S","E","W"],
     "countInDeck": 4,
     "isKing": false,
-    "icon": "🏹",
-    "color": "#228B22"
+    "image": "3_archer.jpg",
+    "icon": "🏹"
   },
   {
-    "id":4,
+    "id": 4,
     "name": "刺客",
     "hp": 4,
     "damage": 10,
@@ -44,8 +44,8 @@
     "attack": ["N"],
     "countInDeck": 2,
     "isKing": false,
-    "icon": "🗡️",
-    "color": "#8B0000"
+    "image": "4_assassin.jpg",
+    "icon": "🗡️"
   },
   {
     "id": 5,
@@ -56,8 +56,8 @@
     "attack": ["N","E","S","W"],
     "countInDeck": 4,
     "isKing": false,
-    "icon": "⚔️",
-    "color": "#CD853F"
+    "image": "5_spearman.jpg",
+    "icon": "⚔️"
   },
   {
     "id": 6,
@@ -68,8 +68,8 @@
     "attack": ["N","E","S","W"],
     "countInDeck": 4,
     "isKing": false,
-    "icon": "🛡️",
-    "color": "#708090"
+    "image": "6_shield.jpg",
+    "icon": "🛡️"
   },
   {
     "id": 7,
@@ -80,8 +80,8 @@
     "attack": ["NW","NE"],
     "countInDeck": 2,
     "isKing": false,
-    "icon": "🔮",
-    "color": "#9932CC"
+    "image": "7_mage.jpg",
+    "icon": "🔮"
   },
   {
     "id": 8,
@@ -92,7 +92,7 @@
     "attack": ["N","NW","NE"],
     "countInDeck": 1,
     "isKing": false,
-    "icon": "🐴",
-    "color": "#B22222"
+    "image": "8_cavalry.jpg",
+    "icon": "🐴"
   }
 ]
