@@ -279,21 +279,36 @@ body::before {
 @keyframes cardEnter {
     from {
         opacity: 0;
-        transform: translate(-50%, -50%) scale(0.5);
+        transform: translate(-50%, -50%) scale(0.5) rotate(-10deg);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1) rotate(3deg);
     }
     to {
         opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
     }
 }
 
-.card {
-    animation: cardEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+.card.card-new {
+    animation: cardEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes cardSelect {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1) translateY(-4px);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.1) translateY(-8px);
+    }
 }
 
 /* 选中的卡牌 - 放大/抬起效果 */
 .card.selected {
-    transform: translate(-50%, -50%) scale(1.1) translateY(-8px);
+    animation: cardSelect 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
     z-index: 10;
     border-color: #ffd700;
@@ -301,15 +316,15 @@ body::before {
 
 @keyframes pulse {
     0%, 100% {
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(255, 215, 0, 0.4);
     }
     50% {
-        box-shadow: 0 12px 30px rgba(255, 215, 0, 0.5);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3), 0 0 0 8px rgba(255, 215, 0, 0);
     }
 }
 
 .card.selected {
-    animation: cardEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), pulse 1.5s ease-in-out infinite;
+    animation: cardSelect 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, pulse 2s ease-in-out infinite 0.3s;
 }
 
 /* 蓝方卡牌 - 旋转180度 */
@@ -321,18 +336,33 @@ body::before {
     transform: translate(-50%, -50%) rotate(180deg) scale(1.05);
 }
 
+@keyframes cardSelectBlue {
+    0% {
+        transform: translate(-50%, -50%) rotate(180deg) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -50%) rotate(180deg) scale(1.1) translateY(-4px);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(180deg) scale(1.1) translateY(-8px);
+    }
+}
+
 .card.card-blue.selected {
-    transform: translate(-50%, -50%) rotate(180deg) scale(1.1) translateY(-8px);
-    animation: cardEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), pulseBlue 1.5s ease-in-out infinite;
+    animation: cardSelectBlue 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 @keyframes pulseBlue {
     0%, 100% {
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(100, 149, 237, 0.4);
     }
     50% {
-        box-shadow: 0 12px 30px rgba(100, 149, 237, 0.6);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3), 0 0 0 8px rgba(100, 149, 237, 0);
     }
+}
+
+.card.card-blue.selected {
+    animation: cardSelectBlue 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, pulseBlue 2s ease-in-out infinite 0.3s;
 }
 
 /* 卡牌图片 */
@@ -631,18 +661,6 @@ button#exitBtn {
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     border-radius: 6px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    animation: handCardEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes handCardEnter {
-    from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.8);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
 }
 
 .hand-card:hover {

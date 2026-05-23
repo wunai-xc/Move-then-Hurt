@@ -138,16 +138,21 @@ function renderBoard() {
             }
             
             const unit = boardState.board[i][j];
+            const prevUnit = previousState?.board?.[i]?.[j];
             
             if (unit) {
                 cell.classList.add("has-unit");
                 
                 const isBlue = unit.owner === 'BLUE';
+                const isNewUnit = !prevUnit;
                 
                 const cardDiv = document.createElement('div');
                 cardDiv.className = 'card';
                 if (isBlue) {
                     cardDiv.classList.add('card-blue');
+                }
+                if (isNewUnit) {
+                    cardDiv.classList.add('card-new');
                 }
                 
                 const img = document.createElement('img');
@@ -164,7 +169,7 @@ function renderBoard() {
                     <div class="card-name">${unit.card.name}</div>
                     <div class="card-hp-dmg">
                         <span class="card-hp">❤️${unit.currentHp}</span>
-                        <span class="card-dmg">⚔️${unit.card.damage}</span>
+                        <span class="card-dmg">⚔️${card.damage}</span>
                     </div>
                 `;
                 cardDiv.appendChild(infoDiv);
