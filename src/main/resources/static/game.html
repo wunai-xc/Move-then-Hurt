@@ -7,22 +7,46 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="title">Move then Hurt</div>
-<div class="sub-title">先移动后攻击</div>
-<div class="game-container">
-    <div class="turn-indicator" id="turnIndicator">当前回合: 红方</div>
-    <div id="board" class="board"></div>
-    <div class="hand-area">
-        <div class="hand-title">📜 手牌区</div>
-        <div id="hand" class="hand-container"></div>
+    <div class="title">Move then Hurt</div>
+    <div class="sub-title">先移动后攻击</div>
+    
+    <div class="game-container">
+        <!-- 蓝方手牌区 -->
+        <div class="player-area player-blue" id="blueArea">
+            <div class="player-info">
+                <span class="player-label">🔵 蓝方</span>
+                <span class="deck-count">牌堆: <span id="blueDeckCount">0</span></span>
+            </div>
+            <div id="blueHand" class="hand-container"></div>
+        </div>
+        
+        <!-- 回合指示器 -->
+        <div class="turn-indicator" id="turnIndicator">
+            <span class="turn-text">当前回合</span>
+            <span class="turn-player">红方</span>
+        </div>
+        
+        <!-- 棋盘 -->
+        <div id="board" class="board"></div>
+        
+        <!-- 红方手牌区 -->
+        <div class="player-area player-red" id="redArea">
+            <div class="player-info">
+                <span class="player-label">🔴 红方</span>
+                <span class="deck-count">牌堆: <span id="redDeckCount">0</span></span>
+            </div>
+            <div id="redHand" class="hand-container"></div>
+        </div>
+        
+        <!-- 控制按钮 -->
+        <div class="controls">
+            <button id="drawBtn">🃏 抽卡</button>
+            <button id="resetBtn">🔄 重新开局</button>
+            <button id="exitBtn">🏠 退出游戏</button>
+        </div>
+        
+        <div id="message" class="message"></div>
     </div>
-    <div class="controls">
-        <button id="drawBtn">🃏 抽卡</button>
-        <button id="resetBtn">🔄 重新开局</button>
-        <button id="exitBtn">🏠 退出游戏</button>
-    </div>
-    <div id="message" class="message"></div>
-</div>
 <script src="script.js"></script>
 </body>
 </html>

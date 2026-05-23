@@ -14,72 +14,232 @@ body {
     padding-top: 30px;
     color: #333;
     min-height: 100vh;
+    transition: background-color 0.8s ease-in-out;
 }
 
-/* 标题 */
+body.turn-red {
+    background: linear-gradient(135deg, rgba(255, 182, 193, 0.15), rgba(255, 160, 122, 0.1));
+}
+
+body.turn-blue {
+    background: linear-gradient(135deg, rgba(173, 216, 230, 0.15), rgba(135, 206, 250, 0.1));
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(rgba(200, 200, 200, 0.3) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200, 200, 200, 0.3) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: -1;
+}
+
 .title {
     font-size: 32px;
     font-weight: bold;
     margin-bottom: 6px;
     color: #444;
+    animation: fadeInDown 0.6s ease-out;
 }
 
 .sub-title {
     font-size: 16px;
     margin-bottom: 25px;
     color: #777;
+    animation: fadeInDown 0.6s ease-out 0.1s both;
 }
 
 .game-container {
-    background: #F5F5F5;
+    background: rgba(255, 255, 255, 0.7);
     padding: 20px 30px 30px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    animation: fadeInUp 0.6s ease-out 0.2s both;
 }
 
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 玩家区域 */
+.player-area {
+    padding: 15px;
+    border-radius: 10px;
+    margin: 10px 0;
+    transition: all 0.5s ease;
+    animation: slideInLeft 0.5s ease-out;
+}
+
+.player-blue {
+    background: rgba(173, 216, 230, 0.3);
+    border: 2px solid rgba(100, 149, 237, 0.5);
+}
+
+.player-red {
+    background: rgba(255, 182, 193, 0.3);
+    border: 2px solid rgba(255, 99, 71, 0.5);
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.player-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.player-label {
+    font-size: 16px;
+}
+
+.deck-count {
+    color: #666;
+    font-size: 12px;
+}
+
+.player-area.active {
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.player-area.active.player-blue {
+    background: rgba(173, 216, 230, 0.5);
+    border-color: rgba(100, 149, 237, 0.8);
+}
+
+.player-area.active.player-red {
+    background: rgba(255, 182, 193, 0.5);
+    border-color: rgba(255, 99, 71, 0.8);
+}
+
+/* 回合指示器 */
 .turn-indicator {
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: bold;
-    padding: 8px 16px;
-    margin-bottom: 20px;
+    padding: 12px 24px;
+    margin: 15px auto;
     background: #e0cbb0;
     color: #4a2e1e;
     letter-spacing: 2px;
+    border-radius: 25px;
+    transition: all 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.turn-text {
+    opacity: 0.8;
+    font-size: 14px;
+}
+
+.turn-player {
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.turn-indicator.red-turn {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+    color: white;
+    box-shadow: 0 4px 15px rgba(238, 90, 90, 0.4);
+}
+
+.turn-indicator.blue-turn {
+    background: linear-gradient(135deg, #4ecdc4, #45b7aa);
+    color: white;
+    box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
 }
 
 /* 棋盘 */
 .board {
     display: grid;
-    grid-template-columns: repeat(5, 128px);
-    grid-template-rows: repeat(5, 128px);
-    border: 2px solid #999;
+    grid-template-columns: repeat(5, 100px);
+    grid-template-rows: repeat(5, 100px);
+    border: 3px solid #999;
     background: #FAF0E6;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    margin-bottom: 20px;
+    margin: 15px auto;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 /* 格子 */
 .cell {
-    width: 128px;
-    height: 128px;
+    width: 100px;
+    height: 100px;
     border: 1px solid #999;
     position: relative;
-    transition: 0.15s;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.cell:hover {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.cell::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 48%, rgba(200, 200, 200, 0.1) 50%, transparent 52%);
+    pointer-events: none;
 }
 
 /* 红方区域 */
 .red-area {
-    background: rgba(255, 120, 120, 0.12);
+    background: rgba(255, 120, 120, 0.2);
 }
 
 /* 蓝方区域 */
 .blue-area {
-    background: rgba(100, 150, 255, 0.12);
+    background: rgba(100, 150, 255, 0.2);
 }
 
 /* 中间区域 */
 .middle-line {
-    background: rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.5);
 }
 
 /* hover */
@@ -89,8 +249,8 @@ body {
 
 /* 棋盘上的卡牌 - 单独渲染 */
 .card {
-    width: 90px;
-    height: 120px;
+    width: 75px;
+    height: 95px;
     background: #FFFFF0;
     border: 2px solid #444;
     position: absolute;
@@ -102,14 +262,54 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.card:active {
+    transform: translate(-50%, -50%) scale(0.98);
+}
+
+@keyframes cardEnter {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.card {
+    animation: cardEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* 选中的卡牌 - 放大/抬起效果 */
 .card.selected {
-    transform: translate(-50%, -50%) scale(1.08) translateY(-6px);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+    transform: translate(-50%, -50%) scale(1.1) translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
     z-index: 10;
+    border-color: #ffd700;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 12px 30px rgba(255, 215, 0, 0.5);
+    }
+}
+
+.card.selected {
+    animation: cardEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), pulse 1.5s ease-in-out infinite;
 }
 
 /* 蓝方卡牌 - 旋转180度 */
@@ -117,9 +317,22 @@ body {
     transform: translate(-50%, -50%) rotate(180deg);
 }
 
-/* 蓝方卡牌选中效果 - 保持旋转并放大 */
+.card.card-blue:hover {
+    transform: translate(-50%, -50%) rotate(180deg) scale(1.05);
+}
+
 .card.card-blue.selected {
-    transform: translate(-50%, -50%) rotate(180deg) scale(1.08) translateY(-6px);
+    transform: translate(-50%, -50%) rotate(180deg) scale(1.1) translateY(-8px);
+    animation: cardEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), pulseBlue 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseBlue {
+    0%, 100% {
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 12px 30px rgba(100, 149, 237, 0.6);
+    }
 }
 
 /* 卡牌图片 */
@@ -130,6 +343,7 @@ body {
     position: absolute;
     top: 0;
     left: 0;
+    border-radius: 4px;
 }
 
 /* 卡牌信息层 */
@@ -146,8 +360,9 @@ body {
     font-size: 10px;
     font-weight: bold;
     color: #2c1e12;
-    background: rgba(255, 255, 240, 0.7);
+    background: rgba(255, 255, 240, 0.85);
     pointer-events: none;
+    border-radius: 4px;
 }
 
 /*卡牌名称显示*/
@@ -199,13 +414,35 @@ body {
 }
 
 /* 可移动格子 - 绿色边框 */
-.cell.move-target {
-    border: 3px solid #32CD32 !important;
+@keyframes borderPulse {
+    0%, 100% {
+        border-color: #32CD32;
+        box-shadow: inset 0 0 10px rgba(50, 205, 50, 0.3);
+    }
+    50% {
+        border-color: #28a428;
+        box-shadow: inset 0 0 15px rgba(50, 205, 50, 0.5);
+    }
 }
 
-/* 可攻击格子 - 红色X */
+.cell.move-target {
+    border: 3px solid #32CD32 !important;
+    animation: borderPulse 1s ease-in-out infinite;
+    cursor: pointer;
+}
+
+@keyframes attackPulse {
+    0%, 100% {
+        background: rgba(255, 0, 0, 0.15);
+    }
+    50% {
+        background: rgba(255, 0, 0, 0.3);
+    }
+}
+
 .cell.attack-target {
     position: relative;
+    animation: attackPulse 0.8s ease-in-out infinite;
 }
 
 .cell.attack-target::after {
@@ -218,6 +455,18 @@ body {
     font-size: 34px;
     font-weight: bold;
     pointer-events: none;
+    animation: attackIcon 0.5s ease-out;
+}
+
+@keyframes attackIcon {
+    from {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
 }
 
 /* 有单位的格子 */
@@ -243,6 +492,7 @@ body {
         transform: translateX(5px);
     }
 }
+
 .shake {
     animation: shake 0.4s ease-in-out;
 }
@@ -262,85 +512,180 @@ body {
 @keyframes floatUp {
     0% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-10px) scale(1.2);
     }
     100% {
         opacity: 0;
-        transform: translateY(-20px);
+        transform: translateY(-20px) scale(1);
     }
 }
 
-/* 按钮样式：无圆角，触动反馈 */
+/* 按钮样式 */
 button {
-    background: #c0a080;
+    background: linear-gradient(135deg, #c0a080, #a08060);
     border: none;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: bold;
-    padding: 8px 20px;
+    padding: 10px 24px;
     color: #2c1e12;
     cursor: pointer;
-    transition: background 0.1s, transform 0.05s;
-    border-radius: 0;
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
 button:active {
-    transform: translateY(1px);
-    background: #a08060;
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 button#drawBtn {
-    background: #b8d0c0;
+    background: linear-gradient(135deg, #98d8c8, #7fcdbb);
 }
+
 button#resetBtn {
-    background: #e0b090;
+    background: linear-gradient(135deg, #f7dc6f, #f4d03f);
 }
+
 button#exitBtn {
-    background: #d0b8a0;
+    background: linear-gradient(135deg, #d5a6bd, #c39bd3);
+}
+
+.controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 15px;
 }
 
 .message {
     text-align: center;
     margin-top: 15px;
     font-size: 1rem;
-    padding: 5px;
-    background: #e0d0c0;
+    padding: 8px;
+    background: rgba(224, 208, 192, 0.8);
+    border-radius: 8px;
+    animation: fadeIn 0.3s ease;
 }
 
-.hand-area {
-    margin-top: 20px;
-    background: #F5F5F5;
-    padding: 10px;
-    border-top: 1px solid #ccc;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
+/* 手牌区域 */
 .hand-container {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: wrap;
     justify-content: center;
     min-height: 100px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    transition: all 0.3s ease;
 }
 
 /*手牌*/
 .hand-card {
     position: relative;
-    width: 70px;
-    height: 100px;
+    width: 65px;
+    height: 90px;
     cursor: pointer;
     background: #FFFFF0;
-    border: 1px solid #aaa;
-    padding: 2px;
+    border: 2px solid #aaa;
+    padding: 3px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    animation: handCardEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes handCardEnter {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.hand-card:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    border-color: #ffd700;
+}
+
+.hand-card:active {
+    transform: translateY(-4px) scale(1.02);
+}
+
+.hand-card.deployable {
+    border-color: #32CD32;
+    animation: deployablePulse 1s ease-in-out infinite;
+}
+
+@keyframes deployablePulse {
+    0%, 100% {
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    50% {
+        box-shadow: 0 2px 15px rgba(50, 205, 50, 0.5);
+    }
+}
+
+.hand-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(50%);
+}
+
+.hand-card.disabled:hover {
+    transform: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 /*手牌图片*/
 .hand-card img {
     width: 50px;
-    height: 60px;
+    height: 55px;
     object-fit: contain;
+    border-radius: 3px;
 }
 
 .hand-card .card-info {
@@ -349,9 +694,12 @@ button#exitBtn {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 240, 0.85);
-    font-size: 10px;
+    background: rgba(255, 255, 240, 0.9);
+    font-size: 9px;
     padding: 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 /* 手牌的方向标记 */
@@ -362,12 +710,12 @@ button#exitBtn {
     right: 0;
     bottom: 0;
     pointer-events: none;
-    font-size: 8px;
+    font-size: 7px;
 }
 
 .hand-card .direction-marker {
     position: absolute;
-    width: 12px;
+    width: 10px;
     text-align: center;
 }
 
@@ -375,7 +723,7 @@ button#exitBtn {
 .hand-card .attack-x {
     display: inline !important;
 }
-/* 隐藏所有方向标记 */
+
 .move-arrow,
 .attack-x {
     display: none;
@@ -387,32 +735,40 @@ button#exitBtn {
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.85);
     color: white;
-    padding: 8px 20px;
+    padding: 12px 28px;
     border-radius: 30px;
-    font-size: 14px;
+    font-size: 15px;
     z-index: 9999;
     white-space: nowrap;
     pointer-events: none;
-    animation: fadeInOut 2s ease-in-out forwards;
+    animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), toastOut 0.4s ease-in 1.6s forwards;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
-@keyframes fadeInOut {
-    0% {
+
+@keyframes toastIn {
+    from {
         opacity: 0;
         top: 10px;
+        transform: translateX(-50%) scale(0.8);
     }
-    15% {
+    to {
         opacity: 1;
         top: 20px;
+        transform: translateX(-50%) scale(1);
     }
-    85% {
+}
+
+@keyframes toastOut {
+    from {
         opacity: 1;
         top: 20px;
+        transform: translateX(-50%) scale(1);
     }
-    100% {
+    to {
         opacity: 0;
         top: 10px;
-        display: none;
+        transform: translateX(-50%) scale(0.8);
     }
 }
