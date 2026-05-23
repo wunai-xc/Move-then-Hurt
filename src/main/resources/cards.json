@@ -8,7 +8,7 @@
     "attack": [],
     "countInDeck": 2,
     "isKing": true,
-    "image": "1_国王.jpg"
+    "image": "1_king.jpg"
   },
   {
     "id": 2,
@@ -19,7 +19,7 @@
     "attack": ["NE","SW","NE","SW"],
     "countInDeck": 6,
     "isKing": false,
-    "image": "2_骑士.jpg"
+    "image": "2_knight.jpg"
   },
   {
     "id":3,
@@ -30,7 +30,7 @@
     "attack": ["N","S","E","W"],
     "countInDeck": 4,
     "isKing": false,
-    "image": "3_弓手.jpg"
+    "image": "3_archer.jpg"
   },
   {
     "id":4,
@@ -41,7 +41,7 @@
     "attack": ["N"],
     "countInDeck": 2,
     "isKing": false,
-    "image": "4_刺客.jpg"
+    "image": "4_assassin.jpg"
   },
   {
     "id": 5,
@@ -52,7 +52,7 @@
     "attack": ["N","E","S","W"],
     "countInDeck": 4,
     "isKing": false,
-    "image": "5_长枪兵.jpg"
+    "image": "5_spearman.jpg"
   },
   {
     "id": 6,
@@ -63,7 +63,7 @@
     "attack": ["N","E","S","W"],
     "countInDeck": 4,
     "isKing": false,
-    "image": "6_盾兵.jpg"
+    "image": "6_shield.jpg"
   },
   {
     "id": 7,
@@ -74,7 +74,7 @@
     "attack": ["NW","NE"],
     "countInDeck": 2,
     "isKing": false,
-    "image": "7_法师.jpg"
+    "image": "7_mage.jpg"
   },
   {
     "id": 8,
@@ -85,6 +85,6 @@
     "attack": ["N","NW","NE"],
     "countInDeck": 1,
     "isKing": false,
-    "image": "8_骑兵.jpg"
+    "image": "8_cavalry.jpg"
   }
 ]
