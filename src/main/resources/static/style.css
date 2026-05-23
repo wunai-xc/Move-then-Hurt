@@ -504,35 +504,6 @@ body::before {
     animation: attackIcon 0.5s ease-out;
 }
 
-/* 攻击范围（无敌人） */
-@keyframes rangePulse {
-    0%, 100% {
-        background: rgba(255, 165, 0, 0.15);
-    }
-    50% {
-        background: rgba(255, 165, 0, 0.3);
-    }
-}
-
-.cell.attack-range {
-    position: relative;
-    border: 3px dashed #ff9500 !important;
-    animation: rangePulse 1.2s ease-in-out infinite;
-}
-
-.cell.attack-range::after {
-    content: "○";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #ff9500;
-    font-size: 28px;
-    font-weight: bold;
-    pointer-events: none;
-    opacity: 0.7;
-}
-
 @keyframes attackIcon {
     from {
         transform: translate(-50%, -50%) scale(0);
