@@ -1,17 +1,4 @@
 [
-  {/*
-  {
-    "id": 0,
-    "name": "实例",
-    "hp": 0-30,
-    "damage": 0-30,
-    "move": ["N","NE","E","SE","S","SW","W","NW"],
-    "attack": ["N","NE","E","SE","S","SW","W","NW"],
-    "countInDeck": 0-10,
-    "isKing": false/true,
-    "image": "0_实例.jpg"
-  },*/
-  },
   {
     "id": 1,
     "name": "国王",
