@@ -8,7 +8,8 @@
     "attack": [],
     "countInDeck": 2,
     "isKing": true,
-    "image": "1_king.jpg"
+    "icon": "👑",
+    "color": "#FFD700"
   },
   {
     "id": 2,
@@ -19,7 +20,8 @@
     "attack": ["NE","SW","NE","SW"],
     "countInDeck": 6,
     "isKing": false,
-    "image": "2_knight.jpg"
+    "icon": "🛡️",
+    "color": "#4169E1"
   },
   {
     "id":3,
@@ -30,7 +32,8 @@
     "attack": ["N","S","E","W"],
     "countInDeck": 4,
     "isKing": false,
-    "image": "3_archer.jpg"
+    "icon": "🏹",
+    "color": "#228B22"
   },
   {
     "id":4,
@@ -41,7 +44,8 @@
     "attack": ["N"],
     "countInDeck": 2,
     "isKing": false,
-    "image": "4_assassin.jpg"
+    "icon": "🗡️",
+    "color": "#8B0000"
   },
   {
     "id": 5,
@@ -52,7 +56,8 @@
     "attack": ["N","E","S","W"],
     "countInDeck": 4,
     "isKing": false,
-    "image": "5_spearman.jpg"
+    "icon": "⚔️",
+    "color": "#CD853F"
   },
   {
     "id": 6,
@@ -63,7 +68,8 @@
     "attack": ["N","E","S","W"],
     "countInDeck": 4,
     "isKing": false,
-    "image": "6_shield.jpg"
+    "icon": "🛡️",
+    "color": "#708090"
   },
   {
     "id": 7,
@@ -74,7 +80,8 @@
     "attack": ["NW","NE"],
     "countInDeck": 2,
     "isKing": false,
-    "image": "7_mage.jpg"
+    "icon": "🔮",
+    "color": "#9932CC"
   },
   {
     "id": 8,
@@ -85,6 +92,7 @@
     "attack": ["N","NW","NE"],
     "countInDeck": 1,
     "isKing": false,
-    "image": "8_cavalry.jpg"
+    "icon": "🐴",
+    "color": "#B22222"
   }
 ]
