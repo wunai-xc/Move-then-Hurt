@@ -117,7 +117,12 @@ function calculateMoveAttackPositions(unit, row, col) {
 function clearHighlights() {
     const cells = document.querySelectorAll('.board .cell');
     cells.forEach(cell => {
-        cell.classList.remove('selected', 'move-target', 'attack-target');
+        cell.classList.remove('move-target', 'attack-target');
+    });
+    // 清除所有卡牌的选中效果
+    const cards = document.querySelectorAll('.board .card');
+    cards.forEach(card => {
+        card.classList.remove('selected');
     });
 }
 
@@ -145,6 +150,11 @@ function renderBoard() {
             
             if (unit) {
                 cell.classList.add("has-unit");
+                
+                // 创建卡牌容器
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'card';
+                
                 // 卡牌图片
                 const img = document.createElement('img');
                 img.src = `Cards/${unit.card.imageFile}`;
@@ -153,7 +163,7 @@ function renderBoard() {
                 const hpPercent = unit.currentHp / unit.card.hp;
                 const brightness = 0.4 + hpPercent * 0.6;
                 img.style.filter = `brightness(${brightness})`;
-                cell.appendChild(img);
+                cardDiv.appendChild(img);
 
                 // 文字层
                 const infoDiv = document.createElement('div');
@@ -165,7 +175,7 @@ function renderBoard() {
                         <span class="card-dmg">⚔️${unit.card.damage}</span>
                     </div>
                 `;
-                cell.appendChild(infoDiv);
+                cardDiv.appendChild(infoDiv);
 
                 // 方向标记
                 const dirContainer = document.createElement('div');
@@ -185,7 +195,8 @@ function renderBoard() {
                     if (hasAttack) marker.innerHTML += `<span class="attack-x">X</span>`;
                     dirContainer.appendChild(marker);
                 }
-                cell.appendChild(dirContainer);
+                cardDiv.appendChild(dirContainer);
+                cell.appendChild(cardDiv);
             }
             cell.onclick = () => handleCellClick(i, j);
             boardDiv.appendChild(cell);
@@ -196,7 +207,10 @@ function renderBoard() {
     if (selectedFrom) {
         const selectedCell = document.querySelector(`.cell[data-row='${selectedFrom[0]}'][data-col='${selectedFrom[1]}']`);
         if (selectedCell) {
-            selectedCell.classList.add('selected');
+            const cardDiv = selectedCell.querySelector('.card');
+            if (cardDiv) {
+                cardDiv.classList.add('selected');
+            }
             const unit = boardState.board[selectedFrom[0]][selectedFrom[1]];
             if (unit) {
                 const { movePositions, attackPositions } = calculateMoveAttackPositions(unit, selectedFrom[0], selectedFrom[1]);
