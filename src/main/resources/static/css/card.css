@@ -1,0 +1,123 @@
+/* css/card.css */
+
+/* 1. 棋盘上的卡牌基础 */
+.card {
+    width: 75px;
+    height: 95px;
+    background: #FFFFF0;
+    border: 2px solid #444;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover { transform: translate(-50%, -50%) scale(1.05); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
+.card:active { transform: translate(-50%, -50%) scale(0.98); }
+
+/* 红方卡牌被选中效果 */
+.card.selected {
+    animation: cardSelect 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, pulse 2s ease-in-out infinite 0.3s;
+    z-index: 10;
+    border-color: #ffd700;
+}
+
+/* 蓝方卡牌特殊处理（倒置180度） */
+.card.card-blue { transform: translate(-50%, -50%) rotate(180deg); }
+.card.card-blue:hover { transform: translate(-50%, -50%) rotate(180deg) scale(1.05); }
+.card.card-blue.selected {
+    animation: cardSelectBlue 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, pulseBlue 2s ease-in-out infinite 0.3s;
+}
+
+/* 2. 手牌区域 */
+.hand-container {
+    display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+    min-height: 100px; padding: 10px;
+    background: rgba(255, 255, 255, 0.5); border-radius: 8px;
+}
+
+.hand-card {
+    position: relative;
+    width: 65px; height: 90px;
+    cursor: pointer; background: #FFFFF0; border: 2px solid #aaa; padding: 3px;
+    display: flex; flex-direction: column; align-items: center;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hand-card:hover { transform: translateY(-8px) scale(1.05); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); border-color: #ffd700; }
+.hand-card:active { transform: translateY(-4px) scale(1.02); }
+
+/* 手牌不可用状态 */
+.hand-card.disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(50%); }
+.hand-card.disabled:hover { transform: none; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); }
+
+/* 可部署状态亮显 */
+.hand-card.deployable { border-color: #32CD32; animation: deployablePulse 1s ease-in-out infinite; }
+
+/* 3. 卡牌公共内部元素 */
+.card .card-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; border-radius: 4px; }
+.hand-card img { width: 50px; height: 55px; object-fit: contain; border-radius: 3px; }
+
+.card .card-info, .hand-card .card-info {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 4px; font-weight: bold; color: #2c1e12; pointer-events: none; border-radius: 4px;
+}
+.card .card-info { background: rgba(255, 255, 240, 0.85); font-size: 10px; }
+.hand-card .card-info { background: rgba(255, 255, 240, 0.9); font-size: 9px; }
+
+.card .card-name { text-align: center; background: rgba(0, 0, 0, 0.3); border-radius: 2px; font-size: 10px; }
+.card .card-hp-dmg { display: flex; justify-content: space-between; margin-top: 4px; }
+.card .card-hp { color: #2d6a2d; }
+.card .card-dmg { color: #b34e1a; }
+
+/* 4. 卡牌方向指示器 */
+.card .direction-markers, .hand-card .direction-markers { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; }
+.card .direction-markers { font-size: 10px; }
+.hand-card .direction-markers { font-size: 7px; }
+
+.card .direction-marker { position: absolute; font-size: 10px; width: 16px; text-align: center; }
+.hand-card .direction-marker { position: absolute; width: 10px; text-align: center; }
+
+.card .move-arrow { color: #1f5c1f; }
+.card .attack-x { color: #a4343e; }
+.hand-card .move-arrow, .hand-card .attack-x { display: inline !important; }
+.move-arrow, .attack-x { display: none; }
+
+/* 5. 卡牌动画集合 */
+@keyframes cardEnter {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.5) rotate(-10deg); }
+    50% { transform: translate(-50%, -50%) scale(1.1) rotate(3deg); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+}
+.card.card-new { animation: cardEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+@keyframes cardSelect {
+    0% { transform: translate(-50%, -50%) scale(1); }
+    100% { transform: translate(-50%, -50%) scale(1.1) translateY(-8px); }
+}
+@keyframes cardSelectBlue {
+    0% { transform: translate(-50%, -50%) rotate(180deg) scale(1); }
+    100% { transform: translate(-50%, -50%) rotate(180deg) scale(1.1) translateY(-8px); }
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(255, 215, 0, 0.4); }
+    50% { box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3), 0 0 0 8px rgba(255, 215, 0, 0); }
+}
+@keyframes pulseBlue {
+    0%, 100% { box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(100, 149, 237, 0.4); }
+    50% { box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3), 0 0 0 8px rgba(100, 149, 237, 0); }
+}
+@keyframes deployablePulse {
+    0%, 100% { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); }
+    50% { box-shadow: 0 2px 15px rgba(50, 205, 50, 0.5); }
+}
