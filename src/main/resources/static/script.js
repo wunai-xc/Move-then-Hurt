@@ -12,6 +12,12 @@ const arrowIcon = {
     'S': '↓', 'SW': '↙', 'W': '←', 'NW': '↖'
 };
 
+// 方向旋转180度的映射
+const rotateDir180 = {
+    'N': 'S', 'NE': 'SW', 'E': 'W', 'SE': 'NW',
+    'S': 'N', 'SW': 'NE', 'W': 'E', 'NW': 'SE'
+};
+
 // 八个方向在卡片上的绝对定位（百分比）
 const dirPositions = {
     'N':  { top: '0%', left: '50%', transform: 'translate(-50%, -50%)' },
@@ -151,9 +157,14 @@ function renderBoard() {
             if (unit) {
                 cell.classList.add("has-unit");
                 
+                const isBlue = unit.owner === 'BLUE';
+                
                 // 创建卡牌容器
                 const cardDiv = document.createElement('div');
                 cardDiv.className = 'card';
+                if (isBlue) {
+                    cardDiv.classList.add('card-blue');
+                }
                 
                 // 卡牌图片
                 const img = document.createElement('img');
@@ -188,10 +199,14 @@ function renderBoard() {
                     if (!hasMove && !hasAttack) continue;
                     const marker = document.createElement('div');
                     marker.className = 'direction-marker';
-                    marker.style.top = pos.top;
-                    marker.style.left = pos.left;
-                    marker.style.transform = pos.transform;
-                    if (hasMove) marker.innerHTML += `<span class="move-arrow">${arrowIcon[dir]}</span>`;
+                    
+                    // 对于蓝方卡牌，旋转方向180度
+                    const actualDir = isBlue ? rotateDir180[dir] : dir;
+                    const actualPos = dirPositions[actualDir];
+                    marker.style.top = actualPos.top;
+                    marker.style.left = actualPos.left;
+                    marker.style.transform = actualPos.transform;
+                    if (hasMove) marker.innerHTML += `<span class="move-arrow">${arrowIcon[actualDir]}</span>`;
                     if (hasAttack) marker.innerHTML += `<span class="attack-x">X</span>`;
                     dirContainer.appendChild(marker);
                 }

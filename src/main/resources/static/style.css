@@ -112,6 +112,16 @@ body {
     z-index: 10;
 }
 
+/* 蓝方卡牌 - 旋转180度 */
+.card.card-blue {
+    transform: translate(-50%, -50%) rotate(180deg);
+}
+
+/* 蓝方卡牌选中效果 - 保持旋转并放大 */
+.card.card-blue.selected {
+    transform: translate(-50%, -50%) rotate(180deg) scale(1.08) translateY(-6px);
+}
+
 /* 卡牌图片 */
 .card .card-img {
     width: 100%;
