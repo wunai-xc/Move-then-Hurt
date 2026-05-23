@@ -87,16 +87,43 @@ body {
     background: rgba(255, 255, 255, 0.6);
 }
 
-/* 卡牌图片 */
-.card-img {
+/* 棋盘上的卡牌 - 单独渲染 */
+.card {
     width: 90px;
     height: 120px;
-    object-fit: contain;
-    margin: 0 auto;
+    background: #FFFFF0;
+    border: 2px solid #444;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
 }
 
-/* 卡牌文字层（绝对定位在图片上方） */
-.card-info {
+/* 选中的卡牌 - 放大/抬起效果 */
+.card.selected {
+    transform: translate(-50%, -50%) scale(1.08) translateY(-6px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+    z-index: 10;
+}
+
+/* 卡牌图片 */
+.card .card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* 卡牌信息层 */
+.card .card-info {
     position: absolute;
     top: 0;
     left: 0;
@@ -114,7 +141,7 @@ body {
 }
 
 /*卡牌名称显示*/
-.card-name {
+.card .card-name {
     text-align: center;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 2px;
@@ -122,22 +149,22 @@ body {
 }
 
 /*卡牌血量*/
-.card-hp-dmg {
+.card .card-hp-dmg {
     display: flex;
     justify-content: space-between;
     margin-top: 4px;
 }
 
 /*血量攻击文字颜色*/
-.card-hp {
+.card .card-hp {
     color: #2d6a2d;
 }
-.card-dmg {
+.card .card-dmg {
     color: #b34e1a;
 }
 
 /* 方向标记容器 */
-.direction-markers {
+.card .direction-markers {
     position: absolute;
     top: 0;
     left: 0;
@@ -146,7 +173,7 @@ body {
     pointer-events: none;
 }
 
-.direction-marker {
+.card .direction-marker {
     position: absolute;
     font-size: 10px;
     width: 16px;
@@ -154,10 +181,10 @@ body {
 }
 
 /*剪头攻击方向颜色*/
-.move-arrow {
+.card .move-arrow {
     color: #1f5c1f;
 }
-.attack-x {
+.card .attack-x {
     color: #a4343e;
 }
 
@@ -183,19 +210,9 @@ body {
     pointer-events: none;
 }
 
-/* 选中的卡牌 - 放大/抬起效果 */
-.cell.selected {
-    transform: scale(1.08) translateY(-6px);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
-    z-index: 10;
-}
-
-/* 有单位的格子，显示卡牌内容 */
+/* 有单位的格子 */
 .cell.has-unit {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    position: relative;
 }
 
 /* 受伤抖动动画 */
