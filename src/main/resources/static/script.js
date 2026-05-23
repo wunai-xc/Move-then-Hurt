@@ -122,6 +122,14 @@ function clearHighlights() {
 function renderBoard() {
     const boardDiv = document.getElementById("board");
     boardDiv.innerHTML = "";
+    
+    // 游戏结束时添加金色闪烁效果
+    if (boardState.gameOver) {
+        document.body.classList.add('game-over');
+    } else {
+        document.body.classList.remove('game-over');
+    }
+    
     for (let i = 0; i < 5; i++) {
         for (let j = 0; j < 5; j++) {
             const cell = document.createElement("div");
@@ -145,6 +153,7 @@ function renderBoard() {
                 
                 const isBlue = unit.owner === 'BLUE';
                 const isNewUnit = !prevUnit;
+                const hpPercent = unit.currentHp / unit.card.hp;
                 
                 const cardDiv = document.createElement('div');
                 cardDiv.className = 'card';
@@ -155,10 +164,13 @@ function renderBoard() {
                     cardDiv.classList.add('card-new');
                 }
                 
+                // 根据血量设置背景暗度
+                const bgDarkness = Math.floor((1 - hpPercent) * 60); // 0-60的暗度
+                cardDiv.style.backgroundColor = `rgb(${255 - bgDarkness}, ${255 - bgDarkness}, ${240 - bgDarkness})`;
+                
                 const img = document.createElement('img');
                 img.src = `Cards/${unit.card.imageFile}`;
                 img.className = 'card-img';
-                const hpPercent = unit.currentHp / unit.card.hp;
                 const brightness = 0.4 + hpPercent * 0.6;
                 img.style.filter = `brightness(${brightness})`;
                 cardDiv.appendChild(img);
