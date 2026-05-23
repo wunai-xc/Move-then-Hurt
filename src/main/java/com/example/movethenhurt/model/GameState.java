@@ -8,7 +8,7 @@ public class GameState {
     private boolean gameOver = false;
     private Player winner = null;
     private Map<Player, List<Card>> hands;
-    private Map<Player, Queue<Card>> decks;
+    private Queue<Card> deck; // 统一牌堆
     private Map<Player, int[]> kingPos = new HashMap<>();
 
     public static final Map<String, int[]> DIR_OFFSET = new HashMap<>();
@@ -25,11 +25,9 @@ public class GameState {
 
     public GameState() {
         hands = new HashMap<>();
-        decks = new HashMap<>();
+        deck = new LinkedList<>();
         hands.put(Player.RED, new ArrayList<>());
         hands.put(Player.BLUE, new ArrayList<>());
-        decks.put(Player.RED, new LinkedList<>());
-        decks.put(Player.BLUE, new LinkedList<>());
     }
 
     public Unit[][] getBoard() { return board; }
@@ -42,8 +40,7 @@ public class GameState {
     public void setWinner(Player winner) { this.winner = winner; }
     public Map<Player, List<Card>> getHands() { return hands; }
     public List<Card> getHand(Player player) { return hands.get(player); }
-    public Map<Player, Queue<Card>> getDecks() { return decks; }
-    public Queue<Card> getDeck(Player player) { return decks.get(player); }
+    public Queue<Card> getDeck() { return deck; }
     public Map<Player, int[]> getKingPos() { return kingPos; }
     public int[] getKingPos(Player player) { return kingPos.get(player); }
     public void setKingPos(Player player, int[] pos) { kingPos.put(player, pos); }
@@ -56,11 +53,10 @@ public class GameState {
         if (x >= 0 && x < 5 && y >= 0 && y < 5) board[x][y] = unit;
     }
 
-    // 抽卡：从牌堆顶部抽一张到手牌，手牌满则返回 false，国王牌跳过
+    // 抽卡：从统一牌堆顶部抽一张到手牌，手牌满则返回 false，国王牌跳过
     public boolean drawCardToHand(Player player) {
         List<Card> hand = hands.get(player);
         if (hand.size() >= 5) return false;
-        Queue<Card> deck = decks.get(player);
         if (deck.isEmpty()) return false;
         
         // 跳过所有国王牌，直到找到非国王牌或牌堆空
@@ -94,15 +90,14 @@ public class GameState {
         return true;
     }
 
-    // 死亡处理：从棋盘移除单位，重置血量，放回对应玩家的牌堆底部，国王牌不回牌堆
+    // 死亡处理：从棋盘移除单位，重置血量，放回统一牌堆底部，国王牌不回牌堆
     public void returnToDeck(Unit unit) {
         if (unit.isKing()) return; // 国王牌不回牌堆
-        Player owner = unit.getOwner();
         Card originalCard = unit.getCard();
         // 创建新卡牌实例（保留原始属性，血量重置）
         Card revived = new Card(originalCard.getId(), originalCard.getName(), originalCard.getHp(),
                 originalCard.getDamage(), originalCard.getMoveDirections(), originalCard.getAttackDirections(),
                 1, originalCard.isKing(), originalCard.getImageFile());
-        decks.get(owner).offer(revived);
+        deck.offer(revived);
     }
 }

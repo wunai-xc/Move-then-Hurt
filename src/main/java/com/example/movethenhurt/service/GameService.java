@@ -19,24 +19,24 @@ public class GameService {
 
     public void resetGame() {
         state = new GameState();
-        // 初始化牌堆（根据模板数量生成多份，国王牌不加入牌堆）
-        for (Player p : Player.values()) {
-            Queue<Card> deck = state.getDeck(p);
+        // 初始化统一牌堆（双方各一份所有卡牌）
+        List<Card> allCards = new ArrayList<>();
+        
+        for (int p = 0; p < 2; p++) { // 双方各一份
             for (Card template : cardLoader.getCardTemplates()) {
                 if (template.isKing()) continue; // 跳过国王牌，不加入牌堆
                 for (int i = 0; i < template.getCountInDeck(); i++) {
                     Card copy = new Card(template.getId(), template.getName(), template.getHp(),
                             template.getDamage(), template.getMoveDirections(), template.getAttackDirections(),
                             1, template.isKing(), template.getImageFile());
-                    deck.offer(copy);
+                    allCards.add(copy);
                 }
             }
-            // 洗牌（可选）
-            List<Card> list = new ArrayList<>(deck);
-            Collections.shuffle(list);
-            deck.clear();
-            deck.addAll(list);
         }
+        
+        // 洗牌
+        Collections.shuffle(allCards);
+        state.getDeck().addAll(allCards);
 
         // 放置国王
         Card kingTemplate = cardLoader.getCardTemplates().stream().filter(Card::isKing).findFirst().orElse(null);

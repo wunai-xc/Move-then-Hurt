@@ -257,8 +257,9 @@ function renderHand() {
     
     const redDeckCount = document.getElementById("redDeckCount");
     const blueDeckCount = document.getElementById("blueDeckCount");
-    if (redDeckCount) redDeckCount.innerText = boardState.decks["RED"]?.length || 0;
-    if (blueDeckCount) blueDeckCount.innerText = boardState.decks["BLUE"]?.length || 0;
+    const deckSize = boardState.deck?.length || 0;
+    if (redDeckCount) redDeckCount.innerText = deckSize;
+    if (blueDeckCount) blueDeckCount.innerText = deckSize;
     
     updateActivePlayerArea();
 }
