@@ -1,36 +1,103 @@
-
 [
+  {/*
   {
     "id": 0,
-    "name": "国王",
-    "hp": 6,
-    "damage": 0,
+    "name": "实例",
+    "hp": 0-30,
+    "damage": 0-30,
     "move": ["N","NE","E","SE","S","SW","W","NW"],
-    "attack": [],
-    "countInDeck": 1,
-    "isKing": true,
-    "image": "0_国王.jpg"
+    "attack": ["N","NE","E","SE","S","SW","W","NW"],
+    "countInDeck": 0-10,
+    "isKing": false/true,
+    "image": "0_实例.jpg"
+  },*/
   },
   {
     "id": 1,
-    "name": "步兵",
-    "hp": 3,
-    "damage": 2,
-    "move": ["N","S","E","W"],
-    "attack": ["N","S","E","W"],
-    "countInDeck": 4,
-    "isKing": false,
-    "image": "1_步兵.jpg"
+    "name": "国王",
+    "hp": 20,
+    "damage": 0,
+    "move": ["N","NE","E","SE","S","SW","W","NW"],
+    "attack": [],
+    "countInDeck": 2,
+    "isKing": true,
+    "image": "1_国王.jpg"
   },
   {
     "id": 2,
-    "name": "弓箭手",
-    "hp": 2,
-    "damage": 2,
+    "name": "骑士",
+    "hp": 10,
+    "damage": 5,
     "move": ["N","S","E","W"],
-    "attack": ["NE","SE","NW","SW"],
-    "countInDeck": 3,
+    "attack": ["NE","SW","NE","SW"],
+    "countInDeck": 6,
     "isKing": false,
-    "image": "2_弓箭手.jpg"
+    "image": "2_骑士.jpg"
+  },
+  {
+    "id":3,
+    "name": "弓手",
+    "hp": 6,
+    "damage": 7,
+    "move": ["NE","SE","NW","SW"],
+    "attack": ["N","S","E","W"],
+    "countInDeck": 4,
+    "isKing": false,
+    "image": "3_弓手.jpg"
+  },
+  {
+    "id":4,
+    "name": "刺客",
+    "hp": 4,
+    "damage": 10,
+    "move": ["E","SE","W","NW"],
+    "attack": ["N"],
+    "countInDeck": 2,
+    "isKing": false,
+    "image": "4_刺客.jpg"
+  },
+  {
+    "id": 5,
+    "name": "长枪兵",
+    "hp": 10,
+    "damage": 4,
+    "move": ["N","NE","SE","S"],
+    "attack": ["N","E","S","W"],
+    "countInDeck": 4,
+    "isKing": false,
+    "image": "5_长枪兵.jpg"
+  },
+  {
+    "id": 6,
+    "name": "盾兵",
+    "hp": 20,
+    "damage": 3,
+    "move": ["N","E","S","W"],
+    "attack": ["N","E","S","W"],
+    "countInDeck": 4,
+    "isKing": false,
+    "image": "6_盾兵.jpg"
+  },
+  {
+    "id": 7,
+    "name": "法师",
+    "hp": 8,
+    "damage": 5,
+    "move": ["NW","SW","E"],
+    "attack": ["NW","NE"],
+    "countInDeck": 2,
+    "isKing": false,
+    "image": "7_法师.jpg"
+  },
+  {
+    "id": 8,
+    "name": "骑兵",
+    "hp": 10,
+    "damage": 6,
+    "move": ["N","S"],
+    "attack": ["N","NW","NE"],
+    "countInDeck": 1,
+    "isKing": false,
+    "image": "8_骑兵.jpg"
   }
 ]
