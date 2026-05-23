@@ -1,28 +1,41 @@
+/* 全局 */
 * {
-    box-sizing: border-box;
-    user-select: none;
-}
-
-/*主体*/
-body {
-    background: #FAF0E6;   /* 主色调 */
-    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
     margin: 0;
-    padding: 20px;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/**/
+body {
+    background: #F5F5F5;
+    font-family: "Microsoft YaHei", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30px;
+    color: #333;
+    min-height: 100vh;
+}
+
+/* 标题 */
+.title {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #444;
+}
+
+.sub-title {
+    font-size: 16px;
+    margin-bottom: 25px;
+    color: #777;
+}
+
 .game-container {
     background: #F5F5F5;
     padding: 20px 30px 30px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-/**/
 .turn-indicator {
     text-align: center;
     font-size: 1.5rem;
@@ -34,83 +47,52 @@ body {
     letter-spacing: 2px;
 }
 
-/*棋盘背景*/
+/* 棋盘 */
 .board {
     display: grid;
-    grid-template-columns: repeat(5, 98px);
+    grid-template-columns: repeat(5, 128px);
     grid-template-rows: repeat(5, 128px);
-    gap: 0;
-    background: #fff;
-    border: 1px solid #ccc;
+    border: 2px solid #999;
+    background: #FAF0E6;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
     margin-bottom: 20px;
 }
 
-/*格子*/
+/* 格子 */
 .cell {
-    background: #FFFFF0;
-    position: relative;
-    padding: 4px;           
-    /* 卡牌比格子小4px */
-    border: 1px solid #ddd;
-    cursor: pointer;
-    width: 98px;
+    width: 128px;
     height: 128px;
-    transition: all 0.2s ease;
+    border: 1px solid #999;
+    position: relative;
+    transition: 0.15s;
 }
 
-/* 可移动格子 - 绿色边框 */
-.cell.move-target {
-    border: 3px solid #4CAF50 !important;
-    box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+/* 红方区域 */
+.red-area {
+    background: rgba(255, 120, 120, 0.12);
 }
 
-/* 可攻击格子 - 红色X */
-.cell.attack-target::after {
-    content: "×";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 60px;
-    font-weight: bold;
-    color: #F44336;
-    text-shadow: 0 0 4px rgba(244, 67, 54, 0.8);
-    pointer-events: none;
+/* 蓝方区域 */
+.blue-area {
+    background: rgba(100, 150, 255, 0.12);
 }
 
-/* 有单位的格子，显示卡牌内容 */
-.cell.has-unit {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+/* 中间区域 */
+.middle-line {
+    background: rgba(255, 255, 255, 0.45);
 }
 
-/* 选中的卡牌 - 放大/抬起效果 */
-.cell.selected {
-    transform: scale(1.1) translateY(-8px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    z-index: 10;
+/* hover */
+.cell:hover {
+    background: rgba(255, 255, 255, 0.6);
 }
 
 /* 卡牌图片 */
 .card-img {
     width: 90px;
     height: 120px;
-    object-fit: contain;   /* 保持比例，完整显示图片，可能留白 */
+    object-fit: contain;
     margin: 0 auto;
-}
-
-/* 受伤抖动动画 */
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-5px); }
-    40% { transform: translateX(5px); }
-    60% { transform: translateX(-5px); }
-    80% { transform: translateX(5px); }
-}
-.shake {
-    animation: shake 0.4s ease-in-out;
 }
 
 /* 卡牌文字层（绝对定位在图片上方） */
@@ -134,7 +116,7 @@ body {
 /*卡牌名称显示*/
 .card-name {
     text-align: center;
-    background: rgba(0,0,0,0.3);
+    background: rgba(0, 0, 0, 0.3);
     border-radius: 2px;
     font-size: 10px;
 }
@@ -147,8 +129,12 @@ body {
 }
 
 /*血量攻击文字颜色*/
-.card-hp { color: #2d6a2d; }
-.card-dmg { color: #b34e1a; }
+.card-hp {
+    color: #2d6a2d;
+}
+.card-dmg {
+    color: #b34e1a;
+}
 
 /* 方向标记容器 */
 .direction-markers {
@@ -160,7 +146,6 @@ body {
     pointer-events: none;
 }
 
-/**/
 .direction-marker {
     position: absolute;
     font-size: 10px;
@@ -169,12 +154,70 @@ body {
 }
 
 /*剪头攻击方向颜色*/
-.move-arrow { color: #1f5c1f; }
-.attack-x { color: #a4343e; }
+.move-arrow {
+    color: #1f5c1f;
+}
+.attack-x {
+    color: #a4343e;
+}
 
-/* 血量变深效果（通过滤镜） */
-.card-img.damaged {
-    filter: brightness(0.7) sepia(0.5);
+/* 可移动格子 - 绿色边框 */
+.cell.move-target {
+    border: 3px solid #32CD32 !important;
+}
+
+/* 可攻击格子 - 红色X */
+.cell.attack-target {
+    position: relative;
+}
+
+.cell.attack-target::after {
+    content: "✖";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: red;
+    font-size: 34px;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+/* 选中的卡牌 - 放大/抬起效果 */
+.cell.selected {
+    transform: scale(1.08) translateY(-6px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+    z-index: 10;
+}
+
+/* 有单位的格子，显示卡牌内容 */
+.cell.has-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 受伤抖动动画 */
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    20% {
+        transform: translateX(-5px);
+    }
+    40% {
+        transform: translateX(5px);
+    }
+    60% {
+        transform: translateX(-5px);
+    }
+    80% {
+        transform: translateX(5px);
+    }
+}
+.shake {
+    animation: shake 0.4s ease-in-out;
 }
 
 /* 飘字动画 */
@@ -190,8 +233,14 @@ body {
 }
 
 @keyframes floatUp {
-    0% { opacity: 1; transform: translateY(0); }
-    100% { opacity: 0; transform: translateY(-20px); }
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
 }
 
 /* 按钮样式：无圆角，触动反馈 */
@@ -205,20 +254,23 @@ button {
     cursor: pointer;
     transition: background 0.1s, transform 0.05s;
     border-radius: 0;
-    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
 }
-
 
 button:active {
     transform: translateY(1px);
     background: #a08060;
 }
 
-
-button#drawBtn { background: #b8d0c0; }
-button#resetBtn { background: #e0b090; }
-button#exitBtn { background: #d0b8a0; }
-
+button#drawBtn {
+    background: #b8d0c0;
+}
+button#resetBtn {
+    background: #e0b090;
+}
+button#exitBtn {
+    background: #d0b8a0;
+}
 
 .message {
     text-align: center;
@@ -228,14 +280,12 @@ button#exitBtn { background: #d0b8a0; }
     background: #e0d0c0;
 }
 
-
 .hand-area {
     margin-top: 20px;
     background: #F5F5F5;
     padding: 10px;
     border-top: 1px solid #ccc;
 }
-
 
 .hand-container {
     display: flex;
@@ -272,7 +322,7 @@ button#exitBtn { background: #d0b8a0; }
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255,255,240,0.85);
+    background: rgba(255, 255, 240, 0.85);
     font-size: 10px;
     padding: 2px;
 }
@@ -294,11 +344,13 @@ button#exitBtn { background: #d0b8a0; }
     text-align: center;
 }
 
-.hand-card .move-arrow, .hand-card .attack-x {
+.hand-card .move-arrow,
+.hand-card .attack-x {
     display: inline !important;
 }
 /* 隐藏所有方向标记 */
-.move-arrow, .attack-x {
+.move-arrow,
+.attack-x {
     display: none;
 }
 
@@ -308,7 +360,7 @@ button#exitBtn { background: #d0b8a0; }
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(0,0,0,0.8);
+    background: rgba(0, 0, 0, 0.8);
     color: white;
     padding: 8px 20px;
     border-radius: 30px;
@@ -319,14 +371,21 @@ button#exitBtn { background: #d0b8a0; }
     animation: fadeInOut 2s ease-in-out forwards;
 }
 @keyframes fadeInOut {
-    0% { opacity: 0; top: 10px; }
-    15% { opacity: 1; top: 20px; }
-    85% { opacity: 1; top: 20px; }
-    100% { opacity: 0; top: 10px; display: none; }
-}.card-img {
-    width: auto;
-    height: 100%;
-    max-width: 100%;
-    object-fit: contain;   /* 保持比例，完整显示图片，可能留白 */
-    margin: 0 auto;
+    0% {
+        opacity: 0;
+        top: 10px;
+    }
+    15% {
+        opacity: 1;
+        top: 20px;
+    }
+    85% {
+        opacity: 1;
+        top: 20px;
+    }
+    100% {
+        opacity: 0;
+        top: 10px;
+        display: none;
+    }
 }
