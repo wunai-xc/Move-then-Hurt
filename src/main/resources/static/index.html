@@ -8,27 +8,103 @@
 </head>
 <body>
 <div class="start-container">
-    <h1 class="game-title">Move then Hurt</h1>
-    <p class="subtitle">先移动，后攻击</p>
-    <div class="menu-buttons">
-        <button id="startGameBtn" class="menu-btn">开始游戏</button>
-        <button id="rulesBtn" class="menu-btn">游戏规则</button>
+    <div class="title-section">
+        <h1 class="game-title">Move then Hurt</h1>
+        <p class="subtitle">先移动，后攻击</p>
     </div>
-    <div id="rulesModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>游戏规则</h2>
-            <ul>
-                <li>5x5 棋盘，红蓝双方各占两排，国王位于中间。</li>
-                <li>每回合可选择：移动单位、抽卡、部署手牌到己方两排。</li>
-                <li>移动后自动攻击攻击方向内的敌人。</li>
-                <li>卡牌有血量、伤害、移动方向和攻击方向（用箭头标注）。</li>
-                <li>国王死亡或被围堵则游戏结束。</li>
-                <li>更多细节请探索游戏！</li>
-            </ul>
+    
+    <div class="menu-buttons">
+        <button id="startGameBtn" class="menu-btn btn-primary">
+            <span class="btn-icon">🎮</span> 开始游戏
+        </button>
+        <button id="rulesBtn" class="menu-btn btn-secondary">
+            <span class="btn-icon">📜</span> 游戏规则
+        </button>
+        <button id="aboutBtn" class="menu-btn btn-secondary">
+            <span class="btn-icon">ℹ️</span> 关于游戏
+        </button>
+    </div>
+    
+    <div class="feature-section">
+        <div class="feature-card">
+            <div class="feature-icon">♟️</div>
+            <h3>战术卡牌</h3>
+            <p>多样的卡牌类型，不同的移动和攻击方式</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3>策略对战</h3>
+            <p>先移动后攻击，考验你的战术思维</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">👥</div>
+            <h3>双人对战</h3>
+            <p>与好友一起享受游戏乐趣</p>
         </div>
     </div>
-    <footer>🎮 怀念高中时代 | 2023-2025</footer>
+    
+    <div id="rulesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎯 游戏规则</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="rule-section">
+                    <h3>📐 棋盘设置</h3>
+                    <p>5×5 棋盘，红蓝双方各占两排，国王位于中间</p>
+                </div>
+                <div class="rule-section">
+                    <h3>🎮 操作方式</h3>
+                    <p>每回合可选择：移动单位、抽卡、部署手牌到己方两排</p>
+                </div>
+                <div class="rule-section">
+                    <h3>⚔️ 攻击机制</h3>
+                    <p>移动后自动攻击攻击方向内的敌人</p>
+                </div>
+                <div class="rule-section">
+                    <h3>🃏 卡牌属性</h3>
+                    <p>卡牌有血量、伤害、移动方向和攻击方向（用箭头标注）</p>
+                </div>
+                <div class="rule-section">
+                    <h3>🏆 胜利条件</h3>
+                    <p>国王死亡或被围堵则游戏结束</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>ℹ️ 关于游戏</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="about-section">
+                    <h3>🎮 Move then Hurt</h3>
+                    <p>一款充满策略的回合制卡牌对战游戏</p>
+                </div>
+                <div class="about-section">
+                    <h3>📅 开发历程</h3>
+                    <p>怀念高中时代 | 2023-2025</p>
+                </div>
+                <div class="about-section">
+                    <h3>💡 设计理念</h3>
+                    <p>简单易懂的规则，深度的策略性</p>
+                </div>
+                <div class="about-section">
+                    <h3>🔗 技术栈</h3>
+                    <p>Spring Boot + WebSocket + HTML5</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>🎮 怀念高中时代 | 2023-2025</p>
+        <p class="footer-small">Made with ❤️</p>
+    </footer>
 </div>
 <script src="start.js"></script>
 </body>

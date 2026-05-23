@@ -592,16 +592,15 @@ body::before {
 
 /* 按钮样式 */
 button {
-    background: linear-gradient(135deg, #c0a080, #a08060);
     border: none;
     font-size: 1.1rem;
     font-weight: bold;
-    padding: 10px 24px;
-    color: #2c1e12;
+    padding: 12px 28px;
+    color: white;
     cursor: pointer;
     transition: all 0.3s ease;
-    border-radius: 8px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     position: relative;
     overflow: hidden;
 }
@@ -622,41 +621,56 @@ button:hover::before {
 }
 
 button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
 button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
 button#drawBtn {
-    background: linear-gradient(135deg, #98d8c8, #7fcdbb);
+    background: linear-gradient(135deg, #98d8c8 0%, #7fcdbb 100%);
+}
+
+button#drawBtn:hover {
+    box-shadow: 0 6px 20px rgba(127, 205, 187, 0.4);
 }
 
 button#resetBtn {
-    background: linear-gradient(135deg, #f7dc6f, #f4d03f);
+    background: linear-gradient(135deg, #f7dc6f 0%, #f4d03f 100%);
+}
+
+button#resetBtn:hover {
+    box-shadow: 0 6px 20px rgba(244, 208, 63, 0.4);
 }
 
 button#exitBtn {
-    background: linear-gradient(135deg, #d5a6bd, #c39bd3);
+    background: linear-gradient(135deg, #d5a6bd 0%, #c39bd3 100%);
+}
+
+button#exitBtn:hover {
+    box-shadow: 0 6px 20px rgba(195, 155, 211, 0.4);
 }
 
 .controls {
     display: flex;
-    gap: 15px;
+    gap: 18px;
     justify-content: center;
-    margin-top: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
 }
 
 .message {
     text-align: center;
     margin-top: 15px;
     font-size: 1rem;
-    padding: 8px;
-    background: rgba(224, 208, 192, 0.8);
-    border-radius: 8px;
+    padding: 10px;
+    background: rgba(224, 208, 192, 0.85);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
     animation: fadeIn 0.3s ease;
 }
 
