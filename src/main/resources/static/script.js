@@ -132,6 +132,15 @@ function renderBoard() {
             cell.setAttribute('data-row', i);
             cell.setAttribute('data-col', j);
             
+            // 添加区域颜色类
+            if (i === 0 || i === 1) {
+                cell.classList.add("blue-area");
+            } else if (i === 3 || i === 4) {
+                cell.classList.add("red-area");
+            } else {
+                cell.classList.add("middle-line");
+            }
+            
             const unit = boardState.board[i][j];
             
             if (unit) {
