@@ -152,6 +152,7 @@
     -ms-user-select: none;
     user-select: none;
     transition: all .2s ease-in-out;
+    flex-shrink: 0;
 }
 
 .player-switch-inner {
@@ -160,9 +161,10 @@
     position: absolute;
     left: 25px;
     font-weight: bold;
+    z-index: 1;
 }
 
-.player-switch:after {
+.player-switch::after {
     content: '';
     width: 20px;
     height: 20px;
@@ -173,9 +175,12 @@
     top: 1px;
     cursor: pointer;
     transition: left .2s ease-in-out, width .2s ease-in-out;
+    display: block;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    z-index: 2;
 }
 
-.player-switch:active:after {
+.player-switch:active::after {
     width: 26px;
 }
 
@@ -188,10 +193,10 @@
     left: 8px;
 }
 
-.player-switch-checked:after {
+.player-switch-checked::after {
     left: 25px;
 }
 
-.player-switch-checked:active:after {
+.player-switch-checked:active::after {
     left: 19px;
 }
