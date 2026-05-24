@@ -48,6 +48,8 @@
 
 .player-blue { background: rgba(173, 216, 230, 0.3); border: 2px solid rgba(100, 149, 237, 0.5); }
 .player-red { background: rgba(255, 182, 193, 0.3); border: 2px solid rgba(255, 99, 71, 0.5); }
+.player-enemy { background: rgba(200, 200, 200, 0.3); border: 2px dashed rgba(150, 150, 150, 0.5); }
+.player-self { background: rgba(173, 255, 180, 0.3); border: 2px solid rgba(100, 200, 100, 0.5); }
 
 .player-info {
     display: flex;
@@ -61,6 +63,15 @@
 .player-label { font-size: 16px; }
 .deck-count { color: #666; font-size: 12px; }
 
+/* 棋盘旋转 */
+.board-rotate {
+    transform: rotate(180deg);
+    transition: transform 0.5s ease;
+}
+.board-rotate .cell {
+    transform: rotate(180deg);
+}
+
 /* 当前行动回合高亮显示 */
 .player-area.active {
     transform: scale(1.02);
@@ -68,6 +79,7 @@
 }
 .player-area.active.player-blue { background: rgba(173, 216, 230, 0.5); border-color: rgba(100, 149, 237, 0.8); }
 .player-area.active.player-red { background: rgba(255, 182, 193, 0.5); border-color: rgba(255, 99, 71, 0.8); }
+.player-area.active.player-self { background: rgba(173, 255, 180, 0.5); border-color: rgba(100, 200, 100, 0.8); }
 
 /* 回合指示器 */
 .turn-indicator {

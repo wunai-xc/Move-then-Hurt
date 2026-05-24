@@ -57,11 +57,10 @@ export function clearHighlights() {
 }
 
 export function updateActivePlayerArea() {
-    const redArea = document.getElementById("redArea");
-    const blueArea = document.getElementById("blueArea");
+    const selfArea = document.getElementById("selfArea");
+    const enemyArea = document.getElementById("enemyArea");
 
-    if (redArea) redArea.classList.toggle('active', state.currentPlayer === "RED");
-    if (blueArea) blueArea.classList.toggle('active', state.currentPlayer === "BLUE");
+    if (selfArea) selfArea.classList.toggle('active', state.currentPlayer === state.boardState?.currentTurn);
 }
 
 export function updateTurnIndicator() {
@@ -89,6 +88,14 @@ export function renderBoard() {
 
     const boardDiv = document.getElementById("board");
     if (!boardDiv) return;
+    
+    // 根据当前玩家决定是否旋转棋盘
+    if (state.currentPlayer === "BLUE") {
+        boardDiv.classList.add("board-rotate");
+    } else {
+        boardDiv.classList.remove("board-rotate");
+    }
+    
     boardDiv.innerHTML = "";
 
     // 游戏结束时添加金色闪烁效果
@@ -191,27 +198,23 @@ export function renderHand() {
         return;
     }
 
-    const redHandDiv = document.getElementById("redHand");
-    const blueHandDiv = document.getElementById("blueHand");
-    if (!redHandDiv || !blueHandDiv) return;
+    const handDiv = document.getElementById("hand");
+    if (!handDiv) return;
 
-    redHandDiv.innerHTML = "";
-    blueHandDiv.innerHTML = "";
+    handDiv.innerHTML = "";
 
-    const redHand = state.boardState.hands["RED"] || [];
-    const blueHand = state.boardState.hands["BLUE"] || [];
+    // 只显示当前玩家的手牌
+    const hand = state.boardState.hands[state.currentPlayer] || [];
 
-    if (redHand.length === 0) redHandDiv.innerHTML = '<div style="color:#aaa; padding:10px;">无手牌</div>';
-    else redHand.forEach((card, idx) => redHandDiv.appendChild(createHandCard(card, "RED", idx)));
-
-    if (blueHand.length === 0) blueHandDiv.innerHTML = '<div style="color:#aaa; padding:10px;">无手牌</div>';
-    else blueHand.forEach((card, idx) => blueHandDiv.appendChild(createHandCard(card, "BLUE", idx)));
+    if (hand.length === 0) {
+        handDiv.innerHTML = '<div style="color:#aaa; padding:10px;">无手牌</div>';
+    } else {
+        hand.forEach((card, idx) => handDiv.appendChild(createHandCard(card, state.currentPlayer, idx)));
+    }
 
     const deckSize = state.boardState.deck?.length || 0;
-    const redDeckCount = document.getElementById("redDeckCount");
-    const blueDeckCount = document.getElementById("blueDeckCount");
-    if (redDeckCount) redDeckCount.innerText = deckSize;
-    if (blueDeckCount) blueDeckCount.innerText = deckSize;
+    const deckCount = document.getElementById("deckCount");
+    if (deckCount) deckCount.innerText = deckSize;
 
     updateActivePlayerArea();
 }
@@ -269,21 +272,36 @@ function createHandCard(card, player, index) {
     return cardDiv;
 }
 
+// 坐标转换函数（处理棋盘旋转）
+function convertCoords(x, y) {
+    if (state.currentPlayer === "BLUE") {
+        // 棋盘旋转180度，转换坐标
+        return [4 - x, 4 - y];
+    }
+    return [x, y];
+}
+
+// 获取实际部署位置
+function getDeployZone() {
+    if (state.currentPlayer === "RED") {
+        return { min: 3, max: 4 };
+    } else {
+        return { min: 0, max: 1 };
+    }
+}
+
 export function handleCellClick(x, y) {
     if (state.boardState.gameOver) return;
+    
+    // 转换坐标（处理旋转）
+    const [actualX, actualY] = convertCoords(x, y);
 
     if (state.deployMode && state.selectedCardIndex !== null) {
-        const unit = state.boardState.board[x][y];
+        const unit = state.boardState.board[actualX][actualY];
         if (unit === null) {
-            if (state.currentPlayer === "RED" && (x !== 3 && x !== 4)) {
-                showToast("只能在己方两排（第3-4行）部署！");
-                state.deployMode = false;
-                state.selectedCardIndex = null;
-                renderHand();
-                return;
-            }
-            if (state.currentPlayer === "BLUE" && (x !== 0 && x !== 1)) {
-                showToast("只能在己方两排（第0-1行）部署！");
+            const deployZone = getDeployZone();
+            if (actualX < deployZone.min || actualX > deployZone.max) {
+                showToast("只能在己方两排部署！");
                 state.deployMode = false;
                 state.selectedCardIndex = null;
                 renderHand();
@@ -293,8 +311,8 @@ export function handleCellClick(x, y) {
                 action: "deploy",
                 player: state.currentPlayer,
                 cardIndex: state.selectedCardIndex,
-                row: x,
-                col: y
+                row: actualX,
+                col: actualY
             }));
         } else {
             showToast("目标格子已有单位");
@@ -304,21 +322,21 @@ export function handleCellClick(x, y) {
         renderHand();
         return;
     } else {
-        const unit = state.boardState.board[x][y];
+        const unit = state.boardState.board[actualX][actualY];
 
         if (state.selectedFrom) {
             const selectedUnit = state.boardState.board[state.selectedFrom[0]][state.selectedFrom[1]];
             if (selectedUnit) {
                 const { movePositions } = calculateMoveAttackPositions(selectedUnit, state.selectedFrom[0], state.selectedFrom[1]);
-                const isMoveTarget = movePositions.some(([r, c]) => r === x && c === y);
+                const isMoveTarget = movePositions.some(([r, c]) => r === actualX && c === actualY);
                 if (isMoveTarget) {
                     state.socket.send(JSON.stringify({
                         action: "move",
                         player: state.currentPlayer,
                         fromX: state.selectedFrom[0],
                         fromY: state.selectedFrom[1],
-                        toX: x,
-                        toY: y
+                        toX: actualX,
+                        toY: actualY
                     }));
                     state.selectedFrom = null;
                     clearHighlights();
@@ -331,7 +349,7 @@ export function handleCellClick(x, y) {
         state.selectedFrom = null;
 
         if (unit && unit.owner === state.currentPlayer) {
-            state.selectedFrom = [x, y];
+            state.selectedFrom = [actualX, actualY];
             renderBoard();
             renderHand();
             showToast(`已选中 ${unit.card.name}，点击绿色边框格子移动`);
@@ -343,8 +361,15 @@ export function handleCellClick(x, y) {
 
 export function updatePlayerBadge() {
     const playerBadge = document.getElementById("playerBadge");
+    const selfLabel = document.getElementById("selfLabel");
+    const enemyLabel = document.getElementById("enemyLabel");
+    
     if (!playerBadge) return;
 
+    // 确定敌方
+    const enemyPlayer = state.currentPlayer === "RED" ? "BLUE" : "RED";
+    
+    // 更新顶部徽章
     if (state.currentPlayer === "RED") {
         playerBadge.innerText = "🔴 红方";
         playerBadge.className = "player-badge badge-red";
@@ -354,6 +379,14 @@ export function updatePlayerBadge() {
     } else {
         playerBadge.innerText = "等待分配...";
         playerBadge.className = "player-badge";
+    }
+    
+    // 更新敌方和己方标签
+    if (selfLabel) {
+        selfLabel.innerText = state.currentPlayer === "RED" ? "🔴 己方 (红方)" : "🔵 己方 (蓝方)";
+    }
+    if (enemyLabel) {
+        enemyLabel.innerText = enemyPlayer === "RED" ? "🔴 敌方 (红方)" : "🔵 敌方 (蓝方)";
     }
 
     // 同步更新开关状态

@@ -12,13 +12,11 @@
     <div class="player-badge" id="playerBadge">等待分配...</div>
     
     <div class="game-container">
-        <!-- 蓝方手牌区 -->
-        <div class="player-area player-blue" id="blueArea">
+        <!-- 对方手牌区 -->
+        <div class="player-area player-enemy" id="enemyArea">
             <div class="player-info">
-                <span class="player-label">🔵 蓝方</span>
-                <span class="deck-count">牌堆: <span id="blueDeckCount">0</span></span>
+                <span class="player-label" id="enemyLabel">敌方</span>
             </div>
-            <div id="blueHand" class="hand-container"></div>
         </div>
         
         <!-- 回合指示器 -->
@@ -30,13 +28,13 @@
         <!-- 棋盘 -->
         <div id="board" class="board"></div>
         
-        <!-- 红方手牌区 -->
-        <div class="player-area player-red" id="redArea">
+        <!-- 己方手牌区 -->
+        <div class="player-area player-self" id="selfArea">
             <div class="player-info">
-                <span class="player-label">🔴 红方</span>
-                <span class="deck-count">牌堆: <span id="redDeckCount">0</span></span>
+                <span class="player-label" id="selfLabel">己方</span>
+                <span class="deck-count">牌堆: <span id="deckCount">0</span></span>
             </div>
-            <div id="redHand" class="hand-container"></div>
+            <div id="hand" class="hand-container"></div>
         </div>
         
         <!-- 玩家切换开关 -->
