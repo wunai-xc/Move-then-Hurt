@@ -120,7 +120,7 @@
 @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* 安卓风格玩家切换开关 */
+/* 自定义风格玩家切换开关 */
 .player-switch-container {
     display: flex;
     align-items: center;
@@ -137,51 +137,61 @@
 }
 
 .player-switch {
-    position: relative;
     display: inline-block;
-    width: 56px;
-    height: 32px;
-}
-
-.player-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #ccc;
-    transition: 0.4s;
-    border-radius: 32px;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
+    width: 48px;
     height: 24px;
-    width: 24px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    line-height: 22px;
+    border-radius: 24px;
+    vertical-align: middle;
+    border: 1px solid #ccc;
+    background-color: #ccc;
+    position: relative;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    transition: all .2s ease-in-out;
 }
 
-input:checked + .slider {
-    background: linear-gradient(135deg, #4ecdc4, #45b7aa);
+.player-switch-inner {
+    color: #fff;
+    font-size: 12px;
+    position: absolute;
+    left: 25px;
+    font-weight: bold;
 }
 
-input:checked + .slider:before {
-    transform: translateX(24px);
+.player-switch:after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+    background-color: #fff;
+    position: absolute;
+    left: 1px;
+    top: 1px;
+    cursor: pointer;
+    transition: left .2s ease-in-out, width .2s ease-in-out;
 }
 
-input:focus + .slider {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+.player-switch:active:after {
+    width: 26px;
+}
+
+.player-switch-checked {
+    border-color: #4ecdc4;
+    background-color: #4ecdc4;
+}
+
+.player-switch-checked .player-switch-inner {
+    left: 8px;
+}
+
+.player-switch-checked:after {
+    left: 25px;
+}
+
+.player-switch-checked:active:after {
+    left: 19px;
 }

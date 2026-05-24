@@ -358,22 +358,38 @@ export function updatePlayerBadge() {
 
     // 同步更新开关状态
     const playerToggle = document.getElementById("playerToggle");
-    if (playerToggle) {
-        playerToggle.checked = state.currentPlayer === "BLUE";
+    const switchWord = document.getElementById("switchWord");
+    if (playerToggle && switchWord) {
+        if (state.currentPlayer === "BLUE") {
+            playerToggle.classList.add("player-switch-checked");
+            switchWord.innerText = "红";
+        } else {
+            playerToggle.classList.remove("player-switch-checked");
+            switchWord.innerText = "蓝";
+        }
     }
 }
 
 export function togglePlayer() {
+    const playerToggle = document.getElementById("playerToggle");
+    const switchWord = document.getElementById("switchWord");
+    
     if (state.currentPlayer === "RED") {
         state.currentPlayer = "BLUE";
         showToast("已切换到 🔵 蓝方");
+        if (playerToggle) playerToggle.classList.add("player-switch-checked");
+        if (switchWord) switchWord.innerText = "红";
     } else if (state.currentPlayer === "BLUE") {
         state.currentPlayer = "RED";
         showToast("已切换到 🔴 红方");
+        if (playerToggle) playerToggle.classList.remove("player-switch-checked");
+        if (switchWord) switchWord.innerText = "蓝";
     } else {
         // 如果还没分配玩家，默认分配到红方
         state.currentPlayer = "RED";
         showToast("已分配到 🔴 红方");
+        if (playerToggle) playerToggle.classList.remove("player-switch-checked");
+        if (switchWord) switchWord.innerText = "蓝";
     }
 
     clearHighlights();

@@ -40,7 +40,7 @@ function bindEvents() {
     }
 
     if (playerToggle) {
-        playerToggle.addEventListener("change", () => {
+        playerToggle.addEventListener("click", () => {
             togglePlayer();
         });
     }
