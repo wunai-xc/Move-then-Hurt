@@ -97,7 +97,7 @@ public class GameState {
         // 创建新卡牌实例（保留原始属性，血量重置）
         Card revived = new Card(originalCard.getId(), originalCard.getName(), originalCard.getHp(),
                 originalCard.getDamage(), originalCard.getMoveDirections(), originalCard.getAttackDirections(),
-                1, originalCard.isKing(), originalCard.getImageFile());
+                1, originalCard.isKing(), originalCard.getImageFile(), originalCard.getIcon());
         deck.offer(revived);
     }
 }
