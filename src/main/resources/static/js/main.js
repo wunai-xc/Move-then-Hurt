@@ -1,11 +1,12 @@
 import { state } from './state.js';
 import { connect } from './network.js';
-import { clearHighlights, renderHand, showToast } from './ui.js';
+import { clearHighlights, renderHand, showToast, updatePlayerBadge, togglePlayer } from './ui.js';
 
 function bindEvents() {
     const drawBtn = document.getElementById("drawBtn");
     const resetBtn = document.getElementById("resetBtn");
     const exitBtn = document.getElementById("exitBtn");
+    const playerToggle = document.getElementById("playerToggle");
 
     if (drawBtn) {
         drawBtn.onclick = () => {
@@ -37,8 +38,19 @@ function bindEvents() {
             window.location.href = "/";
         };
     }
+
+    if (playerToggle) {
+        playerToggle.addEventListener("change", () => {
+            togglePlayer();
+        });
+    }
+}
+
+function init() {
+    updatePlayerBadge();
 }
 
 // 启动游戏
 connect();
 bindEvents();
+init();

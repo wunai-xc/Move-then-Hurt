@@ -340,3 +340,48 @@ export function handleCellClick(x, y) {
         }
     }
 }
+
+export function updatePlayerBadge() {
+    const playerBadge = document.getElementById("playerBadge");
+    if (!playerBadge) return;
+
+    if (state.currentPlayer === "RED") {
+        playerBadge.innerText = "🔴 红方";
+        playerBadge.className = "player-badge badge-red";
+    } else if (state.currentPlayer === "BLUE") {
+        playerBadge.innerText = "🔵 蓝方";
+        playerBadge.className = "player-badge badge-blue";
+    } else {
+        playerBadge.innerText = "等待分配...";
+        playerBadge.className = "player-badge";
+    }
+
+    // 同步更新开关状态
+    const playerToggle = document.getElementById("playerToggle");
+    if (playerToggle) {
+        playerToggle.checked = state.currentPlayer === "BLUE";
+    }
+}
+
+export function togglePlayer() {
+    if (state.currentPlayer === "RED") {
+        state.currentPlayer = "BLUE";
+        showToast("已切换到 🔵 蓝方");
+    } else if (state.currentPlayer === "BLUE") {
+        state.currentPlayer = "RED";
+        showToast("已切换到 🔴 红方");
+    } else {
+        // 如果还没分配玩家，默认分配到红方
+        state.currentPlayer = "RED";
+        showToast("已分配到 🔴 红方");
+    }
+
+    clearHighlights();
+    state.selectedFrom = null;
+    state.deployMode = false;
+    state.selectedCardIndex = null;
+
+    updatePlayerBadge();
+    renderBoard();
+    renderHand();
+}
