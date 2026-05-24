@@ -120,12 +120,12 @@
 @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* 玩家切换开关 */
+/* 安卓风格玩家切换开关 */
 .player-switch-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 15px;
     margin: 15px 0;
     animation: fadeInUp 0.5s ease-out;
 }
@@ -139,8 +139,8 @@
 .player-switch {
     position: relative;
     display: inline-block;
-    width: 100px;
-    height: 40px;
+    width: 56px;
+    height: 32px;
 }
 
 .player-switch input {
@@ -156,53 +156,32 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    border-radius: 40px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 5px;
-    overflow: hidden;
+    background: #ccc;
+    transition: 0.4s;
+    border-radius: 32px;
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: 30px;
-    width: 30px;
-    left: 5px;
-    bottom: 5px;
+    height: 24px;
+    width: 24px;
+    left: 4px;
+    bottom: 4px;
     background-color: white;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    z-index: 2;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
-
-.switch-red,
-.switch-blue {
-    font-size: 18px;
-    z-index: 1;
-    transition: opacity 0.3s ease;
-}
-
-.switch-red { opacity: 1; }
-.switch-blue { opacity: 0.4; }
 
 input:checked + .slider {
     background: linear-gradient(135deg, #4ecdc4, #45b7aa);
 }
 
 input:checked + .slider:before {
-    transform: translateX(60px);
+    transform: translateX(24px);
 }
 
-input:checked + .slider .switch-red { opacity: 0.4; }
-input:checked + .slider .switch-blue { opacity: 1; }
-
-/* 开关悬停效果 */
-.slider:hover { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); }
-.slider:hover:before { transform: scale(1.05); }
-input:checked + .slider:hover:before { transform: translateX(60px) scale(1.05); }
+input:focus + .slider {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
